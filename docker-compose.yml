@@ -1,0 +1,35 @@
+services:
+  mysql:
+    container_name: "mysql"
+    image: mariadb:latest
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SERVICE_TAGS: ${SERVICE_TAGS}
+      SERVICE_NAME: ${SERVICE_NAME}
+    networks:
+      - bridge
+
+  phpmyadmin:
+    container_name: "phpmyadmin"
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "80:8081"
+    environment:
+      PMA_HOST: mysql
+      PMA_PASSWORD: "123456"
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      - mysql
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    driver: bridge
