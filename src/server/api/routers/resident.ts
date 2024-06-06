@@ -1,21 +1,21 @@
 import { z } from "zod";
 import { format } from "date-fns";
 import {
-  employeeFormSchema,
-  type EmployeeColumn,
-  updateEmployeeFormSchema,
+  residentFormSchema,
+  type ResidentColumn,
+  updateResidentFormSchema,
 } from "@/lib/validators";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
-export const employeeRouter = createTRPCRouter({
+export const residentRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const employee = await ctx.prisma.employee.findMany({
+    const resident = await ctx.prisma.resident.findMany({
       orderBy: {
         createAt: "desc",
       },
     });
 
-    const formattedEmployee: EmployeeColumn[] = employee.map((item) => ({
+    const formattedResident: ResidentColumn[] = resident.map((item) => ({
       id: item.id,
       firstName: item.firstName,
       lastName: item.lastName,
@@ -23,33 +23,33 @@ export const employeeRouter = createTRPCRouter({
       createAt: format(item.createAt, "MMMM do, yyyy"),
       updateAt: format(item.updateAt, "MMMM do, yyyy"),
     }));
-    return formattedEmployee;
+    return formattedResident;
   }),
 
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    const employee = await ctx.prisma.employee.findUnique({
+    const resident = await ctx.prisma.resident.findUnique({
       where: { id: input },
     });
-    return employee;
+    return resident;
   }),
 
   create: publicProcedure
-    .input(employeeFormSchema)
+    .input(residentFormSchema)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.employee.create({ data: { ...input } });
+      return await ctx.prisma.resident.create({ data: { ...input } });
     }),
 
   update: publicProcedure
-    .input(updateEmployeeFormSchema)
+    .input(updateResidentFormSchema)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.employee.update({
+      return await ctx.prisma.resident.update({
         where: { id: input.id },
         data: { ...input },
       });
     }),
 
   delete: publicProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    return await ctx.prisma.employee.delete({
+    return await ctx.prisma.resident.delete({
       where: { id: input },
     });
   }),

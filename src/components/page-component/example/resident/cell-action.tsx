@@ -13,27 +13,27 @@ import {
 
 import { Pencil, Trash2 } from "lucide-react";
 import { AlertModal } from "@/components/common/alert-modal";
-import { type EmployeeColumn } from "@/lib/validators";
+import { type ResidentColumn } from "@/lib/validators";
 
 interface CellActionProps {
-  data: EmployeeColumn;
+  data: ResidentColumn;
 }
 
 export function CellAction({ data }: CellActionProps) {
   const router = useRouter();
   const [alertModalOpen, setAlertModalOpen] = useState(false);
 
-  const { refetch } = api.employee.getAll.useQuery(undefined, {
+  const { refetch } = api.resident.getAll.useQuery(undefined, {
     enabled: false,
   });
 
-  const { mutate: deleteEmployee, isLoading: deleteEmployeeIsLoading } =
-    api.employee.delete.useMutation({
+  const { mutate: deleteResident, isLoading: deleteResidentIsLoading } =
+    api.resident.delete.useMutation({
       onError: (err) => {
         toast.error(err.message);
       },
       onSuccess: async (data) => {
-        toast.success("Delete Employee success");
+        toast.success("Delete Resident success");
         await refetch();
       },
     });
@@ -48,14 +48,14 @@ export function CellAction({ data }: CellActionProps) {
               size="icon"
               className="hover:bg-secondary"
               onClick={() => {
-                router.push(`/example/employees/${data.id}`);
+                router.push(`/example/residents/${data.id}`);
               }}
             >
               <Pencil className="h-4 w-4 text-foreground" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Update employee</p>
+            <p>Update resident</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -75,7 +75,7 @@ export function CellAction({ data }: CellActionProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Delete employee</p>
+            <p>Delete resident</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -86,8 +86,8 @@ export function CellAction({ data }: CellActionProps) {
         name={data.firstName}
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}
-        onConfirm={() => deleteEmployee(data.id)}
-        loading={deleteEmployeeIsLoading}
+        onConfirm={() => deleteResident(data.id)}
+        loading={deleteResidentIsLoading}
       />
     </div>
   );

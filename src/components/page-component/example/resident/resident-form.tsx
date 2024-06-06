@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useState } from "react";
-import { type Employee } from "@prisma/client";
+import { type Resident } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { type EmployeeFromValues, employeeFormSchema } from "@/lib/validators";
+import { type ResidentFromValues, residentFormSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
@@ -29,23 +29,23 @@ import {
 } from "@/components/ui/select";
 import { AlertModal } from "@/components/common/alert-modal";
 
-interface EmployeeFormProps {
-  initialData: Employee | null | undefined;
+interface ResidentFormProps {
+  initialData: Resident | null | undefined;
 }
-export const EmployeeForm = ({ initialData }: EmployeeFormProps) => {
+export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit employee" : "Create employee";
-  const description = initialData ? "Edit a employee" : "Create a new employee";
+  const title = initialData ? "Edit resident" : "Create resident";
+  const description = initialData ? "Edit a resident" : "Create a new resident";
   const toastMessage = initialData
-    ? "Employee updated successfully"
-    : "Employee created successfully";
+    ? "Resident updated successfully"
+    : "Resident created successfully";
   const action = initialData ? "Save Changes" : "Create";
 
-  const form = useForm<EmployeeFromValues>({
-    resolver: zodResolver(employeeFormSchema),
+  const form = useForm<ResidentFromValues>({
+    resolver: zodResolver(residentFormSchema),
     defaultValues: initialData || {
       firstName: "",
       lastName: "",
@@ -53,49 +53,49 @@ export const EmployeeForm = ({ initialData }: EmployeeFormProps) => {
     },
   });
 
-  const { mutate: createEmployee } = api.employee.create.useMutation({
+  const { mutate: createResident } = api.resident.create.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
     onSuccess: (data) => {
       toast.success(toastMessage);
-      router.push(`/example/employees`);
+      router.push(`/example/residents`);
     },
   });
 
-  const { mutate: updateEmployee } = api.employee.update.useMutation({
+  const { mutate: updateResident } = api.resident.update.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
     onSuccess: (data) => {
       toast.success(toastMessage);
-      router.push(`/example/employees`);
+      router.push(`/example/residents`);
     },
   });
 
-  const { mutate: deleteEmployee, isLoading: deleteEmployeeIsLoading } =
-    api.employee.delete.useMutation({
+  const { mutate: deleteResident, isLoading: deleteResidentIsLoading } =
+    api.resident.delete.useMutation({
       onError: (err) => {
         toast.error(err.message);
       },
       onSuccess: (data) => {
         toast.success(toastMessage);
-        router.push(`/example/employees`);
+        router.push(`/example/residents`);
       },
     });
 
-  const onSubmit = (values: EmployeeFromValues) => {
+  const onSubmit = (values: ResidentFromValues) => {
     setLoading(true);
     if (initialData) {
-      updateEmployee({ ...values, id: initialData.id });
+      updateResident({ ...values, id: initialData.id });
     } else {
-      createEmployee(values);
+      createResident(values);
     }
     setLoading(false);
   };
 
   const onDelete = () => {
-    deleteEmployee(initialData?.id as string);
+    deleteResident(initialData?.id as string);
   };
 
   return (
@@ -207,7 +207,7 @@ export const EmployeeForm = ({ initialData }: EmployeeFormProps) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
-        loading={deleteEmployeeIsLoading}
+        loading={deleteResidentIsLoading}
       />
     </>
   );

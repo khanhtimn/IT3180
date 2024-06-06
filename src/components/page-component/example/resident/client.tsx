@@ -6,25 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import { type EmployeeColumn } from "@/lib/validators";
+import { type ResidentColumn } from "@/lib/validators";
 import { columns } from "./columns";
 
-interface EmployeeClientProps {
-  data: EmployeeColumn[];
+interface ResidentClientProps {
+  data: ResidentColumn[];
 }
-export const EmployeeClient = ({ data }: EmployeeClientProps) => {
+export const ResidentClient = ({ data }: ResidentClientProps) => {
   const router = useRouter();
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Employee (CRUD)"
-          description="Manage employee for you business"
+          title="Resident (CRUD)"
+          description="Manage resident for you business"
         />
         <Button
           onClick={() => {
-            router.push("/example/employees/new");
+            router.push("/example/residents/new");
           }}
         >
           <Plus className="mr-2 h-4 w-4" /> Add New

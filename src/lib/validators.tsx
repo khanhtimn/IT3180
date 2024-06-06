@@ -1,15 +1,15 @@
 import { z } from "zod";
 
 // Example
-export const employeeFormSchema = z.object({
+export const residentFormSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   gender: z.string().min(1),
 });
 
-export type EmployeeFromValues = z.infer<typeof employeeFormSchema>;
+export type ResidentFromValues = z.infer<typeof residentFormSchema>;
 
-export const employeeColumn = z.object({
+export const residentColumn = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
@@ -18,9 +18,9 @@ export const employeeColumn = z.object({
   updateAt: z.string(),
 });
 
-export type EmployeeColumn = z.infer<typeof employeeColumn>;
+export type ResidentColumn = z.infer<typeof residentColumn>;
 
-export const updateEmployeeFormSchema = z.object({
+export const updateResidentFormSchema = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),

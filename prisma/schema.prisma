@@ -67,12 +67,13 @@ model VerificationToken {
 }
 
 
-model Employee {
+model Resident {
     id           String    @id @default(cuid())
+    nationalId   String @unique @map("national_id")
     firstName    String @map("first_name")
     lastName     String @map("last_name")
     gender       String
-    nationalId   String @unique @map("national_id")
+    address      String @map("address")
     createAt DateTime @default(now()) @map("create_at")
     updateAt DateTime @default(now()) @updatedAt @map("update_at")
 }

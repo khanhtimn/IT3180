@@ -1,10 +1,10 @@
 import React from "react";
 import { api } from "@/utils/api";
 import { Loading } from "@/components/common/loading";
-import { EmployeeClient } from "@/components/page-component/example/employee/client";
+import { ResidentClient } from "@/components/page-component/example/resident/client";
 
-const Employees = () => {
-  const { data, isLoading, isError, error } = api.employee.getAll.useQuery();
+const Residents = () => {
+  const { data, isLoading, isError, error } = api.resident.getAll.useQuery();
 
   if (isLoading) return <Loading />;
 
@@ -13,10 +13,10 @@ const Employees = () => {
   return (
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 md:p-8">
-        <EmployeeClient data={data} />
+        <ResidentClient data={data} />
       </div>
     </div>
   );
 };
 
-export default Employees;
+export default Residents;

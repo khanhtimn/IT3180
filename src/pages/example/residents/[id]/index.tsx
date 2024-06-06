@@ -1,10 +1,10 @@
 import { Loading } from "@/components/common/loading";
-import { EmployeeForm } from "@/components/page-component/example/employee/employee-form";
+import { ResidentForm } from "@/components/page-component/example/resident/resident-form";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import React from "react";
 
-const Employee = () => {
+const Resident = () => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -12,7 +12,7 @@ const Employee = () => {
     return <Loading />;
   }
 
-  const { data: employee, isLoading } = api.employee.getById.useQuery(id);
+  const { data: resident, isLoading } = api.resident.getById.useQuery(id);
 
   if (isLoading) {
     return <Loading />;
@@ -21,10 +21,10 @@ const Employee = () => {
   return (
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 p-4 md:p-8">
-        <EmployeeForm initialData={employee} />
+        <ResidentForm initialData={resident} />
       </div>
     </div>
   );
 };
 
-export default Employee;
+export default Resident;

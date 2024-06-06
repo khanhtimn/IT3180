@@ -2,10 +2,10 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
-import { type EmployeeColumn } from "@/lib/validators";
+import { type ResidentColumn } from "@/lib/validators";
 import { CellAction } from "./cell-action";
 
-export const columns: ColumnDef<EmployeeColumn>[] = [
+export const columns: ColumnDef<ResidentColumn>[] = [
   {
     id: "select",
     header: ({ table }) => (
