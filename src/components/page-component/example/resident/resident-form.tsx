@@ -32,6 +32,7 @@ import { AlertModal } from "@/components/common/alert-modal";
 interface ResidentFormProps {
   initialData: Resident | null | undefined;
 }
+
 export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -50,6 +51,8 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
       firstName: "",
       lastName: "",
       gender: "",
+      address: "",
+      nationalId: "",
     },
   });
 
@@ -147,6 +150,38 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                     <Input
                       {...field}
                       placeholder="Last Name"
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nationalId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>National ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="National ID"
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Address"
                       disabled={loading}
                     />
                   </FormControl>

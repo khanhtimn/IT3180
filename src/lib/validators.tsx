@@ -4,6 +4,8 @@ import { z } from "zod";
 export const residentFormSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  nationalId: z.string().min(1),
+  address: z.string().min(1),
   gender: z.string().min(1),
 });
 
@@ -13,6 +15,8 @@ export const residentColumn = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
+  nationalId: z.string(),
+  address: z.string(),
   gender: z.string(),
   createAt: z.string(),
   updateAt: z.string(),
@@ -24,5 +28,7 @@ export const updateResidentFormSchema = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
+  nationalId: z.string(),
+  address: z.string(),
   gender: z.string(),
 });

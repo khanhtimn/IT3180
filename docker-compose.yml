@@ -23,7 +23,7 @@ services:
       - "80:8081"
     environment:
       PMA_HOST: mysql
-      PMA_PASSWORD: "123456"
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       UPLOAD_LIMIT: 64M
     depends_on:
       - mysql
