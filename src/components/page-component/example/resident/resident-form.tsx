@@ -52,7 +52,6 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
       lastName: "",
       gender: "",
       address: "",
-      nationalId: "",
     },
   });
 

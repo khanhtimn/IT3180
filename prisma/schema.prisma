@@ -68,7 +68,7 @@ model VerificationToken {
 
 model Resident {
   id         String   @id @default(cuid())
-  nationalId String   @unique @map("national_id")
+  nationalId Int   @unique @map("national_id")
   firstName  String   @map("first_name")
   lastName   String   @map("last_name")
   gender     String

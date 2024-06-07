@@ -43,6 +43,14 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     header: "Gender",
   },
   {
+    accessorKey: "nationalId",
+    header: "National ID",
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+  },
+  {
     accessorKey: "createAt",
     header: "Create Time",
   },
