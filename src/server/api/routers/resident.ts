@@ -13,13 +13,12 @@ export const residentRouter = createTRPCRouter({
 
         const formattedResident: ResidentColumn[] = resident.map((item) => ({
             id: item.id,
-            firstName: item.firstName,
-            lastName: item.lastName,
+            name: item.name,
             nationalId: item.nationalId,
             gender: item.gender,
             address: item.address,
-            createAt: format(item.createAt, "MMMM do, yyyy"),
-            updateAt: format(item.updateAt, "MMMM do, yyyy"),
+            createAt: format(item.createAt, "dd/MM/yyyy"),
+            updateAt: format(item.updateAt, "dd/MM/yyyy"),
         }));
         return formattedResident;
     }),

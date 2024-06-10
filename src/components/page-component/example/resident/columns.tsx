@@ -31,12 +31,8 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "firstName",
-    header: "First Name",
-  },
-  {
-    accessorKey: "lastName",
-    header: "Last Name",
+    accessorKey: "name",
+    header: "Name",
   },
   {
     accessorKey: "nationalId",

@@ -48,8 +48,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const form = useForm<ResidentFromValues>({
     resolver: zodResolver(residentFormSchema),
     defaultValues: initialData || {
-      firstName: "",
-      lastName: "",
+      name: "",
       gender: "",
       address: "",
     },
@@ -125,30 +124,14 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
           <div className="grid-cols-3 gap-8 md:grid">
             <FormField
               control={form.control}
-              name="firstName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ và tên đệm</FormLabel>
+                  <FormLabel>Họ & Tên</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="First Name"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Last Name"
                       disabled={loading}
                     />
                   </FormControl>
@@ -244,7 +227,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
       <AlertModal
         title="Are you sure?"
         description="This action cannot be undone."
-        name={initialData?.firstName}
+        name={initialData?.name}
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}

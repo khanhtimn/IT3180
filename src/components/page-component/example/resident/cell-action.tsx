@@ -83,7 +83,7 @@ export function CellAction({ data }: CellActionProps) {
       <AlertModal
         title="Are you sure?"
         description="This action cannot be undone."
-        name={data.firstName}
+        name={data.name}
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}
         onConfirm={() => deleteResident(data.id)}
