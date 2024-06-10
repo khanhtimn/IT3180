@@ -31,12 +31,8 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "firstName",
-    header: "Họ và tên đệm",
-  },
-  {
-    accessorKey: "lastName",
-    header: "Tên",
+    accessorKey: "name",
+    header: "Họ & Tên",
   },
   {
     accessorKey: "gender",

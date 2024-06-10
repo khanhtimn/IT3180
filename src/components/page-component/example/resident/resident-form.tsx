@@ -48,8 +48,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const form = useForm<ResidentFromValues>({
     resolver: zodResolver(residentFormSchema),
     defaultValues: initialData || {
-      firstName: "",
-      lastName: "",
+      name: "",
       gender: "",
       address: "",
     },
@@ -125,10 +124,10 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
           <div className="grid-cols-3 gap-8 md:grid">
             <FormField
               control={form.control}
-              name="firstName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ và tên đệm</FormLabel>
+                  <FormLabel>Họ & Tên</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -138,29 +137,13 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                   </FormControl>
                 </FormItem>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Tên"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            />    
             <FormField
               control={form.control}
               name="nationalId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CCCD/CMND</FormLabel>
+                  <FormLabel>CCCD / CMND</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -242,9 +225,9 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
         </form>
       </Form>
       <AlertModal
-        title="Xóa?"
+        title="Xóa thông tin?"
         description="Không thể khôi phục."
-        name={initialData?.firstName}
+        name={initialData?.name}
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}

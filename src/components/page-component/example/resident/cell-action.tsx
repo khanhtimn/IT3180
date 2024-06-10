@@ -83,7 +83,8 @@ export function CellAction({ data }: CellActionProps) {
       <AlertModal
         title="Xóa?"
         description="Không thể hoàn tác ."
-        name={data.firstName}
+        name={data.name}
+
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}
         onConfirm={() => deleteResident(data.id)}
