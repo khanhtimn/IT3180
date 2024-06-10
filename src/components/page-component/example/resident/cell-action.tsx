@@ -33,7 +33,7 @@ export function CellAction({ data }: CellActionProps) {
         toast.error(err.message);
       },
       onSuccess: async (data) => {
-        toast.success("Delete Resident success");
+        toast.success("Xóa thành công");
         await refetch();
       },
     });
@@ -55,7 +55,7 @@ export function CellAction({ data }: CellActionProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Update resident</p>
+            <p>Cập nhật thông tin</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -75,15 +75,16 @@ export function CellAction({ data }: CellActionProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Delete resident</p>
+            <p>Xóa</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
       <AlertModal
-        title="Are you sure?"
-        description="This action cannot be undone."
+        title="Xóa?"
+        description="Không thể hoàn tác ."
         name={data.name}
+
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}
         onConfirm={() => deleteResident(data.id)}

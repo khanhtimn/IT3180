@@ -32,27 +32,27 @@ export const columns: ColumnDef<ResidentColumn>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "nationalId",
-    header: "National ID",
+    header: "Họ & Tên",
   },
   {
     accessorKey: "gender",
-    header: "Gender",
+    header: "Giới tính",
+  },
+  {
+    accessorKey: "nationalId",
+    header: "CCCD/CMND",
   },
   {
     accessorKey: "address",
-    header: "Address",
+    header: "Địa chỉ",
   },
   {
     accessorKey: "createAt",
-    header: "Create Time",
+    header: "Thời gian tạo",
   },
   {
     accessorKey: "updateAt",
-    header: "Update Time",
+    header: "Thời gian cập nhật",
   },
   {
     id: "actions",
