@@ -81,8 +81,8 @@ export function CellAction({ data }: CellActionProps) {
       </TooltipProvider>
 
       <AlertModal
-        title="Xóa?"
-        description="Không thể hoàn tác ."
+        title="Xóa thông tin?"
+        description="Không thể khôi phục."
         name={data.name}
 
         isOpen={alertModalOpen}

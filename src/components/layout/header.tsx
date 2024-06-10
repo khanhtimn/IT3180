@@ -34,7 +34,7 @@ export default function Header() {
                                 void signIn();
                             }}
                         >
-                            Sign In
+                            Đăng nhập
                         </Button>
                     )}
                 </div>
