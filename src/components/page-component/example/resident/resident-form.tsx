@@ -164,6 +164,12 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
+                      inputMode="numeric" // display number keyboard on mobile
+                      value={field.value || ""}
+                      pattern="[0-9]*" // parse to number type for zod validation
+                      onChange={(e) =>
+                          e.target.validity.valid && field.onChange(+e.target.value) // change input field
+                      }
                       placeholder="National ID"
                       disabled={loading}
                     />

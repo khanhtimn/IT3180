@@ -39,12 +39,12 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     header: "Last Name",
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
-  },
-  {
     accessorKey: "nationalId",
     header: "National ID",
+  },
+  {
+    accessorKey: "gender",
+    header: "Gender",
   },
   {
     accessorKey: "address",
