@@ -128,7 +128,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Họ và tên đệm</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -144,7 +144,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>Tên</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -160,7 +160,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="nationalId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>National ID</FormLabel>
+                  <FormLabel>CCCD/CMT</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -176,7 +176,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>Địa chỉ</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -192,7 +192,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>Giới tính</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -208,8 +208,9 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="male">Nam</SelectItem>
+                      <SelectItem value="female">Nữ</SelectItem>
+                      <SelectItem value="other">Khác</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
