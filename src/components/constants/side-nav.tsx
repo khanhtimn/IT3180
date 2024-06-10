@@ -1,4 +1,4 @@
-import { BookOpenCheck, LayoutDashboard } from "lucide-react";
+import { BookOpenCheck, LayoutDashboard, Info, Users, Landmark } from "lucide-react";
 import { type NavItem } from "@/types";
 
 export const NavItems: NavItem[] = [
@@ -9,21 +9,21 @@ export const NavItems: NavItem[] = [
     color: "text-sky-500",
   },
   {
-    title: "Example",
-    icon: BookOpenCheck,
+    title: "Quản lý hệ thống",
+    icon: Info,
     href: "/example",
     color: "text-orange-500",
     isChidren: true,
     children: [
       {
-        title: "Example-01",
-        icon: BookOpenCheck,
+        title: "Quản lý thông tin",
+        icon: Users,
         color: "text-red-500",
         href: "/example/residents",
       },
       {
-        title: "Example-02",
-        icon: BookOpenCheck,
+        title: "Quản lý khoản thu",
+        icon: Landmark,
         color: "text-red-500",
         href: "/example/example-02",
       },
