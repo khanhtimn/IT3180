@@ -53,15 +53,15 @@ export const AlertModal = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="flex items-center gap-x-2">
-          <span>Are you sure want to delete</span>
+          <span>Tiếp tục xóa</span>
           <span className="text-lg font-bold text-red-500">{name}</span>?
         </div>
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button disabled={loading} variant="outline" onClick={onClose}>
-            Cancel
+            Thoát
           </Button>
           <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-            Continue
+            Tiếp tục
           </Button>
         </div>
       </DialogContent>

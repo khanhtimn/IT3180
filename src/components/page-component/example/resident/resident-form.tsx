@@ -38,12 +38,12 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit resident" : "Create resident";
-  const description = initialData ? "Edit a resident" : "Create a new resident";
+  const title = initialData ? "Cập nhật thông tin" : "Cư dân mới";
+  const description = initialData ? "Cập nhật thông tin" : "Tạo cư dân mới";
   const toastMessage = initialData
-    ? "Resident updated successfully"
-    : "Resident created successfully";
-  const action = initialData ? "Save Changes" : "Create";
+    ? "Cập nhật thành công"
+    : "Tạo mới thành công";
+  const action = initialData ? "Lưu" : "Tạo mới";
 
   const form = useForm<ResidentFromValues>({
     resolver: zodResolver(residentFormSchema),
@@ -132,7 +132,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="First Name"
+                      placeholder="Họ và tên đệm"
                       disabled={loading}
                     />
                   </FormControl>
@@ -148,7 +148,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Last Name"
+                      placeholder="Tên"
                       disabled={loading}
                     />
                   </FormControl>
@@ -160,17 +160,17 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
               name="nationalId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CCCD/CMT</FormLabel>
+                  <FormLabel>CCCD/CMND</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
+                      placeholder="CCCD/CMND"
                       inputMode="numeric" // display number keyboard on mobile
                       value={field.value || ""}
                       pattern="[0-9]*" // parse to number type for zod validation
                       onChange={(e) =>
                           e.target.validity.valid && field.onChange(+e.target.value) // change input field
                       }
-                      placeholder="National ID"
                       disabled={loading}
                     />
                   </FormControl>
@@ -186,7 +186,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Address"
+                      placeholder="Địa chỉ"
                       disabled={loading}
                     />
                   </FormControl>
@@ -209,7 +209,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={field.value}
-                          placeholder="Gender"
+                          placeholder="Giới tính"
                         />
                       </SelectTrigger>
                     </FormControl>
@@ -236,14 +236,14 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                 router.back();
               }}
             >
-              Cancel
+              Thoát
             </Button>
           </div>
         </form>
       </Form>
       <AlertModal
-        title="Are you sure?"
-        description="This action cannot be undone."
+        title="Xóa?"
+        description="Không thể khôi phục."
         name={initialData?.firstName}
         isOpen={open}
         onClose={() => setOpen(false)}
