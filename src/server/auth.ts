@@ -5,7 +5,9 @@ import {
   type DefaultSession,
 } from "next-auth";
 
+import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/server/db";
 
@@ -62,7 +64,29 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID ?? "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? ""
+    }),
+    CredentialsProvider({
+      type: 'credentials',
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "@gmail.com" },
+        password:{ label: "Password", type: "password" },
+      },
+      authorize(credentials){
+        const {email, password} = credentials as {
+          email: string?;
+          password: string;
+        };
+      }
+    }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60,
+  }
 };
 
 /**
