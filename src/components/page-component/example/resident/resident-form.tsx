@@ -197,9 +197,9 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="male">Nam</SelectItem>
-                      <SelectItem value="female">Nữ</SelectItem>
-                      <SelectItem value="other">Khác</SelectItem>
+                      <SelectItem value="Nam">Nam</SelectItem>
+                      <SelectItem value="Nữ">Nữ</SelectItem>
+                      <SelectItem value="Khác">Khác</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
