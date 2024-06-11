@@ -39,15 +39,13 @@ export const residentRouter = createTRPCRouter({
           });
 
           if (!apartmentExists) {
-              throw new Error("Invalid apartment number");
+              throw new Error("Số nhà không tồn tại");
           }
 
           return ctx.prisma.resident.create({
               data: { ...input },
           });
       }),
-
-
 
     // create: publicProcedure
     //     .input(residentFormSchema)
@@ -56,12 +54,30 @@ export const residentRouter = createTRPCRouter({
     //     }),
 
 
+    // update: publicProcedure
+    //     .input(updateResidentFormSchema)
+    //     .mutation(async ({ ctx, input }) => {
+    //         return ctx.prisma.resident.update({
+    //             where: {id: input.id},
+    //             data: {...input},
+    //         });
+    //     }),
+
     update: publicProcedure
         .input(updateResidentFormSchema)
         .mutation(async ({ ctx, input }) => {
+            // Ensure the apartmentNo exists in the Apartment table
+            const apartmentExists = await ctx.prisma.apartment.findUnique({
+                where: { apartmentNo: input.apartmentNo },
+            });
+
+            if (!apartmentExists) {
+                throw new Error("Số nhà không tồn tại");
+            }
+
             return ctx.prisma.resident.update({
-                where: {id: input.id},
-                data: {...input},
+                where: { id: input.id },
+                data: { ...input },
             });
         }),
 
