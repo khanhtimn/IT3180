@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import React, { useState } from "react";
-import { type Resident } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { type ResidentFromValues, residentFormSchema } from "@/lib/validators";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/utils/api";
+import React, {useState} from "react";
+import {type Resident} from "@prisma/client";
+import {useRouter} from "next/navigation";
+import {useForm} from "react-hook-form";
+import {type ResidentFromValues, residentFormSchema} from "@/lib/validators";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {api} from "@/utils/api";
 import toast from "react-hot-toast";
-import { Heading } from "@/components/common/heading";
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import {Heading} from "@/components/common/heading";
+import {Button} from "@/components/ui/button";
+import {Trash} from "lucide-react";
+import {Separator} from "@/components/ui/separator";
 import {
   Form,
   FormControl,
@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {Input} from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -27,13 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertModal } from "@/components/common/alert-modal";
+import {AlertModal} from "@/components/common/alert-modal";
 
 interface ResidentFormProps {
   initialData: Resident | null | undefined;
 }
 
-export const ResidentForm = ({ initialData }: ResidentFormProps) => {
+export const ResidentForm = ({initialData}: ResidentFormProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,11 +50,11 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
     defaultValues: initialData || {
       name: "",
       gender: "",
-      address: "",
+      vehicle: "",
     },
   });
 
-  const { mutate: createResident } = api.resident.create.useMutation({
+  const {mutate: createResident} = api.resident.create.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -64,7 +64,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
     },
   });
 
-  const { mutate: updateResident } = api.resident.update.useMutation({
+  const {mutate: updateResident} = api.resident.update.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -74,7 +74,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
     },
   });
 
-  const { mutate: deleteResident, isLoading: deleteResidentIsLoading } =
+  const {mutate: deleteResident, isLoading: deleteResidentIsLoading} =
     api.resident.delete.useMutation({
       onError: (err) => {
         toast.error(err.message);
@@ -88,7 +88,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const onSubmit = (values: ResidentFromValues) => {
     setLoading(true);
     if (initialData) {
-      updateResident({ ...values, id: initialData.id });
+      updateResident({...values, id: initialData.id});
     } else {
       createResident(values);
     }
@@ -98,11 +98,10 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const onDelete = () => {
     deleteResident(initialData?.id as string);
   };
-
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
+        <Heading title={title} description={description}/>
         {initialData && (
           <Button
             disabled={loading}
@@ -110,11 +109,11 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
             size="icon"
             onClick={() => setOpen(true)}
           >
-            <Trash className="h-4 w-4" />
+            <Trash className="h-4 w-4"/>
           </Button>
         )}
       </div>
-      <Separator />
+      <Separator/>
 
       <Form {...form}>
         <form
@@ -125,23 +124,23 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Họ & Tên</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Họ và tên đệm"
+                      placeholder="Họ & Tên"
                       disabled={loading}
                     />
                   </FormControl>
                 </FormItem>
               )}
-            />    
+            />
             <FormField
               control={form.control}
               name="nationalId"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>CCCD / CMND</FormLabel>
                   <FormControl>
@@ -152,7 +151,31 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                       value={field.value || ""}
                       pattern="[0-9]*" // parse to number type for zod validation
                       onChange={(e) =>
-                          e.target.validity.valid && field.onChange(+e.target.value) // change input field
+                        e.target.validity.valid && field.onChange(+e.target.value) // change input field
+                      }
+                      maxLength={12}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="apartmentNo"
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Số nhà</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Số nhà"
+                      inputMode="numeric" // display number keyboard on mobile
+                      maxLength={3}
+                      value={field.value || ""}
+                      pattern="[0-9]*" // parse to number type for zod validation
+                      onChange={(e) =>
+                        e.target.validity.valid && field.onChange(+e.target.value) // change input field
                       }
                       disabled={loading}
                     />
@@ -162,24 +185,8 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
             />
             <FormField
               control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Địa chỉ</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Địa chỉ"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="gender"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Giới tính</FormLabel>
                   <Select
@@ -202,10 +209,46 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
                       <SelectItem value="Khác">Khác</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
+
+
+            <FormField
+              control={form.control}
+              name="vehicle"
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Phương tiện</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Phương tiện"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Không">Không</SelectItem>
+                      <SelectItem value="Xe đạp">Xe đạp</SelectItem>
+                      <SelectItem value="Xe môtô / Xe gắn máy">Xe môtô / Xe gắn máy</SelectItem>
+                      <SelectItem value="Xe ôtô">Xe ôtô</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+
+
+
           </div>
           <div className="space-x-4">
             <Button disabled={loading} className="ml-auto" type="submit">
