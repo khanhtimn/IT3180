@@ -73,7 +73,7 @@ model Resident {
   gender      String    @map("gender")
   vehicle     String    @map("vehicle")
   apartment   Apartment? @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
-  apartmentNo Int?
+  apartmentNo Int?      @map("apartmentNo")
   fees        Fee[]
   createAt    DateTime  @default(now()) @map("create_at")
   updateAt    DateTime  @default(now()) @updatedAt @map("update_at")

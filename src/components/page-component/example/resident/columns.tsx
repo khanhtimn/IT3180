@@ -43,8 +43,8 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     header: "CCCD/CMND",
   },
   {
-    accessorKey: "address",
-    header: "Địa chỉ",
+    accessorKey: "apartmentNo",
+    header: "Số nhà",
   },
   {
     accessorKey: "createAt",
