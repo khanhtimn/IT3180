@@ -53,6 +53,7 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  password      String
   image         String?
   accounts      Account[]
   sessions      Session[]
@@ -67,13 +68,36 @@ model VerificationToken {
 }
 
 model Resident {
-  id         String   @id @default(cuid())
-  nationalId Int   @unique @map("national_id")
-  // firstName  String   @map("first_name")
-  // lastName   String   @map("last_name")
-  name   String   @map("name")
-  gender     String
-  address    String   @map("address")
-  createAt   DateTime @default(now()) @map("create_at")
-  updateAt   DateTime @default(now()) @updatedAt @map("update_at")
+  id              String   @id @default(cuid())
+  nationalId      Int   @unique @map("national_id")
+  name            String   @map("name")
+  gender          String
+  address         String   @map("address")
+  apartment       Apartment @relation(fields: [floorNo, apartmentNo], references: [floorNo, apartmentNo])
+  floorNo         Int
+  apartmentNo     Int
+  createAt        DateTime @default(now()) @map("create_at")
+  updateAt        DateTime @default(now()) @updatedAt @map("update_at")
+}
+model Apartment {
+  id              Int      @id @default(autoincrement())
+  floorNo         Int
+  apartmentNo     Int
+  residents Resident[]
+  @@unique([floorNo, apartmentNo])
+}
+model Fee {
+  id              String    @id @default(cuid())
+  type            String
+  amount          Float
+  dueDate         DateTime
+  isPaid          Boolean   @default(false)
+  apartment       Apartment @relation(fields: [floorNo, apartmentNo], references: [floorNo, apartmentNo])
+  floorNo         Int
+  apartmentNo     Int
+  resident        Resident? @relation(fields: [residentId], references: [id])
+  residentId      String?
+  @@index([residentId])
+  createAt        DateTime  @default(now()) @map("create_at")
+  updateAt        DateTime  @default(now()) @updatedAt @map("update_at")
 }
