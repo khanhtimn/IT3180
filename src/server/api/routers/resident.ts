@@ -16,7 +16,8 @@ export const residentRouter = createTRPCRouter({
             name: item.name,
             nationalId: item.nationalId,
             gender: item.gender,
-            address: item.address,
+            apartmentNo: item.apartmentNo,
+            vehicle: item.vehicle,
             createAt: format(item.createAt, "dd/MM/yyyy"),
             updateAt: format(item.updateAt, "dd/MM/yyyy"),
         }));
@@ -30,10 +31,30 @@ export const residentRouter = createTRPCRouter({
     }),
 
     create: publicProcedure
-        .input(residentFormSchema)
-        .mutation(async ({ ctx, input }) => {
-            return ctx.prisma.resident.create({data: {...input}});
-        }),
+      .input(residentFormSchema)
+      .mutation(async ({ ctx, input }) => {
+          // Ensure the apartmentNo exists in the Apartment table
+          const apartmentExists = await ctx.prisma.apartment.findUnique({
+              where: { apartmentNo: input.apartmentNo },
+          });
+
+          if (!apartmentExists) {
+              throw new Error("Invalid apartment number");
+          }
+
+          return ctx.prisma.resident.create({
+              data: { ...input },
+          });
+      }),
+
+
+
+    // create: publicProcedure
+    //     .input(residentFormSchema)
+    //     .mutation(async ({ ctx, input }) => {
+    //         return ctx.prisma.resident.create({data: {...input}});
+    //     }),
+
 
     update: publicProcedure
         .input(updateResidentFormSchema)
