@@ -19,15 +19,15 @@ export const ResidentClient = ({ data }: ResidentClientProps) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Resident (CRUD)"
-          description="Manage resident for you business"
+          title="Thông tin cư dân"
+          description="Danh sách cư dân trong hệ thống"
         />
         <Button
           onClick={() => {
             router.push("/example/residents/new");
           }}
         >
-          <Plus className="mr-2 h-4 w-4" /> Add New
+          <Plus className="mr-2 h-4 w-4" /> Thêm mới
         </Button>
       </div>
       <Separator />
