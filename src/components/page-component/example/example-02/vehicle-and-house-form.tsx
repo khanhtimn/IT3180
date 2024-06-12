@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
+import { Button } from "@/components/ui/button";
 
 type VehicleType = Record<"value" | "label", string>;
 
@@ -140,7 +141,7 @@ export function VehicleAndHouseForm() {
         </div>
       </Command>
       <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
-        Nhập diện tích nhà:
+        Diện tích nhà(mét vuông):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <input
@@ -148,7 +149,7 @@ export function VehicleAndHouseForm() {
           id="houseArea"
           value={houseArea}
           onChange={(e) => setHouseArea(e.target.value)}
-          placeholder="e.g. 120"
+          placeholder="Ví dụ: 120"
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
@@ -161,12 +162,12 @@ export function VehicleAndHouseForm() {
           id="internet"
           value={internet}
           onChange={(e) => setInternet(e.target.value)}
-          placeholder="e.g. 50 Mbps"
+          placeholder="Nhập gói cước internet..."
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
       <label htmlFor="electricity" className="block text-sm font-medium text-black-700">
-        Điện:
+        Số điện:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <input
@@ -174,12 +175,12 @@ export function VehicleAndHouseForm() {
           id="electricity"
           value={electricity}
           onChange={(e) => setElectricity(e.target.value)}
-          placeholder="e.g. 220V"
+          placeholder="Nhập số điện tiêu thụ..."
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
       <label htmlFor="water" className="block text-sm font-medium text-black-700">
-        Nước:
+        Nước(khối):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <input
@@ -187,12 +188,12 @@ export function VehicleAndHouseForm() {
           id="water"
           value={water}
           onChange={(e) => setWater(e.target.value)}
-          placeholder="e.g. 100 liters/day"
+          placeholder="Nhập số lượng nước tiêu thụ..."
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
       <label htmlFor="notes" className="block text-sm font-medium text-black-700">
-        Ghi chú thêm:
+        Ghi chú:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <textarea
@@ -204,9 +205,9 @@ export function VehicleAndHouseForm() {
         />
       </div>
       <div className="flex justify-end">
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-          Xác nhận
-        </button>
+        <Button size="sm">
+            Xác nhận
+        </Button>
       </div>
     </div>
   );
