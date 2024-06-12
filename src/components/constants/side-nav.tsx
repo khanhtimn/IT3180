@@ -5,7 +5,7 @@ export const NavItems: NavItem[] = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    href: "/",
+    href: "/dashboard",
     color: "text-sky-500",
   },
   {

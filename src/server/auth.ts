@@ -1,13 +1,15 @@
-import { type GetServerSidePropsContext } from "next";
+import {type GetServerSidePropsContext} from "next";
 import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
 
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/server/db";
+import {PrismaAdapter} from "@next-auth/prisma-adapter";
+import {prisma} from "@/server/db";
+import Credentials from "next-auth/providers/credentials";
+import {loginSchema} from "@/lib/validators";
+import {verify} from "argon2";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -36,33 +38,82 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-
-    // async signIn({ account, profile}) {
-    //   await prisma.user.upsert({
-    //     where: {
-    //       email: profile.email
-    //     },
-    //     create: {
-    //       email: profile.email
-    //     }
-    //   })
-    // },
-     session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
-  },
   adapter: PrismaAdapter(prisma),
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "khanh.pq224867@sis.hust.edu.vn",
+        },
+        password: {label: "Password", type: "password"},
+      },
+      authorize: async (credentials) => {
+        try {
+          const {email, password} = await loginSchema.parseAsync(credentials);
+
+          const result = await prisma.user.findFirst({
+            where: {email},
+          });
+
+          if (!result) return null;
+
+          const isValidPassword = await verify(result.password, password);
+
+          if (!isValidPassword) return null;
+
+          return {id: result.id, email};
+        } catch {
+          return null;
+        }
+      },
     }),
   ],
+  callbacks: {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    jwt: async ({token, user}) => {
+      console.log("JWT callback:", token, user);
+      if (user) {
+        token.userId = user.id;
+        token.email = user.email;
+      }
+
+      return token;
+    },
+
+    session: async ({session, token}) => {
+      console.log("Session callback:", session, token);
+      if (token) {
+        session.user.id = token.userId;
+        session.user.email = token.email;
+      }
+      return session;
+    },
+
+    // session: ({session, token}) => ({
+    //   strategy: "jwt",
+    //   maxAge: 60 * 60 * 24, // 1 Day
+    //   ...session,
+    //   user: {
+    //     ...session.user,
+    //     email: token.email,
+    //     id: token.id,
+    //   },
+    // }),
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    encryption: true,
+    maxAge: 5 * 60 * 1000,
+  },
+
+  pages: {
+    signIn: "/",
+    newUser: "/sign-up",
+  },
 };
 
 /**
