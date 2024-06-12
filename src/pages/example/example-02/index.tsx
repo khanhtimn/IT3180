@@ -22,23 +22,45 @@
 
 // export default Example02;
 
-import { VehicleAndHouseForm } from '@/components/page-component/example/example-02/vehicle-and-house-form';
+// import { VehicleAndHouseForm } from '@/components/page-component/example/example-02/vehicle-and-house-form';
 
 // Trong component của bạn, sử dụng thành phần VehicleAndHouseForm
-const Example02 = () => {
+// const Example02 = () => {
+//   return (
+//     <div className="flex flex-col">
+//       <div className="flex-1 space-y-4 p-4 md:p-8">
+//         <div className="flex items-center justify-between">
+//         <Heading
+//         title = "Quản lý khoản thu"
+//         description = "Quản lý khoản thu của bạn"
+//         />
+//         </div>
+//         <Separator />
+//         <VehicleAndHouseForm />
+//       </div>
+//     </div>
+//    );
+// };
+// export default Example02;
+
+import ApartmentList from '@/components/page-component/example/example-02/ApartmentList';
+
+const Example02: React.FC = () => {
   return (
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 p-4 md:p-8">
-        <div className="flex items-center justify-between">
+         <div className="flex items-center justify-between">
         <Heading
         title = "Quản lý khoản thu"
         description = "Quản lý khoản thu của bạn"
-        />
-        </div>
-        <Separator />
-        <VehicleAndHouseForm />
-      </div>
+         />/         
+         </div>
+         <Separator />
+      <ApartmentList />
     </div>
-   );
+  </div>
+  );
 };
+
 export default Example02;
+
