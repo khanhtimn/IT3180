@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type VehicleType = Record<"value" | "label", string>;
 
@@ -38,6 +39,7 @@ export function VehicleAndHouseForm() {
   const [electricity, setElectricity] = React.useState("");
   const [water, setWater] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const router = useRouter();
 
   const handleUnselect = React.useCallback((vehicle: VehicleType) => {
     setSelected((prev) => prev.filter((s) => s.value !== vehicle.value));
@@ -72,6 +74,10 @@ export function VehicleAndHouseForm() {
     // Hide already selected vehicles and "none" if any other option is selected
     return !selected.some((s) => s.value === vehicle.value) && vehicle.value !== "none";
   });
+
+  const handleBack = () => {
+    router.back();
+  };
 
   return (
     <div className="space-y-4">
@@ -141,7 +147,7 @@ export function VehicleAndHouseForm() {
         </div>
       </Command>
       <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
-        Diện tích nhà(mét vuông):
+        Diện tích nhà (mét vuông):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <input
@@ -180,7 +186,7 @@ export function VehicleAndHouseForm() {
         />
       </div>
       <label htmlFor="water" className="block text-sm font-medium text-black-700">
-        Nước(khối):
+        Nước (khối):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <input
@@ -203,12 +209,16 @@ export function VehicleAndHouseForm() {
           placeholder="Ghi chú..."
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
-      </div>
-      <div className="flex justify-end">
-        <Button size="sm">
-            Xác nhận
+        </div>
+        <div className="space-x-4">
+        <Button className="ml-auto" size="sm" onClick={handleBack}>
+          Quay lại
         </Button>
-      </div>
+        
+        <Button className="ml-auto" size="sm">
+          Xác nhận
+        </Button>
+        </div>
     </div>
   );
 }
