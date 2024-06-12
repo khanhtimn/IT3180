@@ -6,20 +6,13 @@ import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { api } from "@/utils/api"; // Đảm bảo import đúng module
 
-type Apartment = Record<"value" | "label", string>;
-
-const APARTMENTS = [
-  { value: "101", label: "Phòng 101" },
-  { value: "102", label: "Phòng 102" },
-  { value: "103", label: "Phòng 103" },
-  { value: "201", label: "Phòng 201" },
-  { value: "202", label: "Phòng 202" },
-  { value: "203", label: "Phòng 203" },
-  // Thêm các phòng khác nếu cần
-] satisfies Apartment[];
+type Apartment = {
+  apartmentNo: number;
+};
 
 export function ApartmentSelector() {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -28,8 +21,10 @@ export function ApartmentSelector() {
   const [inputValue, setInputValue] = React.useState("");
   const router = useRouter();
 
+  const { data: apartments = [], isLoading } = api.resident.getApartmentsWithResidents.useQuery();
+
   const handleUnselect = React.useCallback((apartment: Apartment) => {
-    setSelected((prev) => prev.filter((s) => s.value !== apartment.value));
+    setSelected((prev) => prev.filter((s) => s.apartmentNo !== apartment.apartmentNo));
   }, []);
 
   const handleKeyDown = React.useCallback(
@@ -53,9 +48,8 @@ export function ApartmentSelector() {
     []
   );
 
-  const selectables = APARTMENTS.filter(
-    (apartment) =>
-      !selected.some((slect_apartment) => apartment.value === slect_apartment.value)
+  const selectables = apartments.filter(
+    (apartment) => !selected.some((s) => s.apartmentNo === apartment.apartmentNo)
   );
 
   const handleConfirm = () => {
@@ -63,14 +57,18 @@ export function ApartmentSelector() {
     router.push("/example/example-02/vehicle-and-house-form");
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
-      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-        <div className="flex flex-wrap gap-1">
-          {selected.map((apartment) => {
-            return (
-              <Badge key={apartment.value} variant="secondary">
-                {apartment.label}
+    <div>
+      <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
+        <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+          <div className="flex flex-wrap gap-1">
+            {selected.map((apartment) => (
+              <Badge key={apartment.apartmentNo} variant="secondary">
+                {`Phòng ${apartment.apartmentNo}`}
                 <button
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
@@ -87,50 +85,48 @@ export function ApartmentSelector() {
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                 </button>
               </Badge>
-            );
-          })}
-          <CommandPrimitive.Input
-            ref={inputRef}
-            value={inputValue}
-            onValueChange={setInputValue}
-            onBlur={() => setOpen(false)}
-            onFocus={() => setOpen(true)}
-            placeholder="Chọn phòng chung cư..."
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-          />
+            ))}
+            <CommandPrimitive.Input
+              ref={inputRef}
+              value={inputValue}
+              onValueChange={setInputValue}
+              onBlur={() => setOpen(false)}
+              onFocus={() => setOpen(true)}
+              placeholder="Chọn phòng chung cư..."
+              className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            />
+          </div>
         </div>
-      </div>
-      <div className="relative mt-2">
-        {open && selectables.length > 0 ? (
-          <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-            <CommandGroup className="h-full overflow-auto">
-              {selectables.map((apartment) => {
-                return (
+        <div className="relative mt-2">
+          {open && selectables.length > 0 ? (
+            <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+              <CommandGroup className="h-full overflow-auto">
+                {selectables.map((apartment) => (
                   <CommandItem
-                    key={apartment.value}
+                    key={apartment.apartmentNo}
                     onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                     }}
-                    onSelect={(value) => {
+                    onSelect={() => {
                       setInputValue("");
                       setSelected((prev) => [...prev, apartment]);
                     }}
-                    className={"cursor-pointer"}
+                    className="cursor-pointer"
                   >
-                    {apartment.label}
+                    {`Phòng ${apartment.apartmentNo}`}
                   </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          </div>
-        ) : null}
-      </div>
-        <div className="flex justify-end">
-      <Button onClick={handleConfirm} className="ml-auto">
-        Xác nhận
-      </Button>
+                ))}
+              </CommandGroup>
+            </div>
+          ) : null}
         </div>
-    </Command>
+      </Command>
+      <div className="flex justify-end">
+        <Button size="sm" onClick={handleConfirm}>
+          Xác nhận
+        </Button>
+      </div>
+    </div>
   );
 }
