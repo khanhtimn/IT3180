@@ -14,7 +14,7 @@ interface ILoginProps {
 }
 
 const SignUp = ({initialData}: ILoginProps) => {
-  const toastMessageSuccess = "Dang ky thành công";
+  const toastMessageSuccess = "Đăng ký thành công";
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +54,7 @@ const SignUp = ({initialData}: ILoginProps) => {
             className="w-full space-y-8"
           >
             <div className="grid-cols-3 gap-8 md:grid">
+            <div className="cols-span-4 row-span-4"></div>
               <FormField
                 control={form.control}
                 name="email"
@@ -73,12 +74,13 @@ const SignUp = ({initialData}: ILoginProps) => {
             </div>
 
             <div className="grid-cols-3 gap-8 md:grid">
+            <div className="cols-span-4 row-span-4"></div>
               <FormField
                 control={form.control}
                 name="password"
                 render={({field}) => (
                   <FormItem>
-                    <FormLabel>Mat khau</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -91,19 +93,18 @@ const SignUp = ({initialData}: ILoginProps) => {
                 )}
               />
             </div>
-            <div className="space-x-4">
-              <Button disabled={loading} className="ml-auto" type="submit">
-                Tao tai khoan
+            <div className="flex justify-center space-x-4">
+              <Button disabled={loading} type="submit">
+                Tạo tài khoản
               </Button>
               <Button
                 disabled={loading}
-                className="ml-auto"
                 type="button"
                 onClick={() => {
                   router.back();
                 }}
               >
-                Quay lai
+                Quay lại
               </Button>
             </div>
           </form>

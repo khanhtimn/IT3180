@@ -1,18 +1,24 @@
-import {ILogin, loginSchema} from "@/lib/validators";
-import {useRouter} from "next/navigation";
-import {useState} from "react";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {signIn} from "next-auth/react";
-import {Form, FormControl, FormField, FormItem, FormLabel} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
+import { ILogin, loginSchema } from "@/lib/validators";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface ILoginProps {
   initialData: ILogin | null | undefined;
 }
 
-const Home = ({initialData}: ILoginProps) => {
+const Home = ({ initialData }: ILoginProps) => {
   const toastMessageSuccess = "Dang nhap thành công";
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -42,12 +48,10 @@ const Home = ({initialData}: ILoginProps) => {
   //   },
   // });
 
-
   // const onSubmit = (values: ILogin) => {
   //   setLoading(true);
   //   signIn({ ...values });
   // };
-
 
   const onSubmit = async (values: ILogin) => {
     setLoading(true);
@@ -63,11 +67,10 @@ const Home = ({initialData}: ILoginProps) => {
     //   setLoading(false);
     // } else {
     //   toast.success(toastMessageSuccess);
-    await signIn("credentials", {...values, callbackUrl: "/dashboard"});
+    await signIn("credentials", { ...values, callbackUrl: "/dashboard" });
     //router.push( "/dashboard");
     setLoading(false);
-  }
-
+  };
 
   return (
     <div>
@@ -76,13 +79,14 @@ const Home = ({initialData}: ILoginProps) => {
           <form
             /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-8"
+            className="flex-inline w-full place-items-center space-y-8"
           >
             <div className="grid-cols-3 gap-8 md:grid">
+              <div className="cols-span-4 row-span-4"></div>
               <FormField
                 control={form.control}
                 name="email"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Họ & Tên</FormLabel>
                     <FormControl>
@@ -98,10 +102,11 @@ const Home = ({initialData}: ILoginProps) => {
             </div>
 
             <div className="grid-cols-3 gap-8 md:grid">
+              <div className="cols-span-4 row-span-4"></div>
               <FormField
                 control={form.control}
                 name="password"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Mat khau</FormLabel>
                     <FormControl>
@@ -116,19 +121,18 @@ const Home = ({initialData}: ILoginProps) => {
                 )}
               />
             </div>
-            <div className="space-x-4">
-              <Button disabled={loading} className="ml-auto" type="submit">
-                Dang nhap
+            <div className="flex justify-center space-x-4">
+              <Button disabled={loading} type="submit">
+                Đăng nhập
               </Button>
               <Button
                 disabled={loading}
-                className="ml-auto"
                 type="button"
                 onClick={() => {
                   router.push("/register");
                 }}
               >
-                Dang ky
+                Đăng ký
               </Button>
             </div>
           </form>

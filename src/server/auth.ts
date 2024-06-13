@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     session: ({session, token}) => {
-      console.log(session)
+      //console.log(session)
       return {
         ...session,
         user: {
@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     jwt: ({user, token}) => {
-      console.log(token)
+      //console.log(token)
       if (user) {
         return {
           ...token,
