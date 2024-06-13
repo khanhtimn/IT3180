@@ -76,7 +76,6 @@ import React from "react";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApartmentSelector } from "@/components/page-component/example/example-02/ApartmentSelector";
-import { useRouter } from "next/navigation";
 
 const ApartmentSelectorPage = () => {
   ;

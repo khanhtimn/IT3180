@@ -177,4 +177,19 @@ export const residentRouter = createTRPCRouter({
 
     return apartments;
   }),
+
+  getVehiclesByApartment: publicProcedure
+  .input(z.object({ apartmentNo: z.number().int().nonnegative() }))
+  .query(async ({ ctx, input }) => {
+    const residents = await ctx.prisma.resident.findMany({
+      where: { apartmentNo: input.apartmentNo },
+      select: { vehicle: true },
+    });
+
+    const vehicles = residents.map((resident) => resident.vehicle);
+    return vehicles;
+  }),
+
+  
 });
+

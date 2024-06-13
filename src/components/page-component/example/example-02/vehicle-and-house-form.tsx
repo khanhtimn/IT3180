@@ -1,151 +1,88 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
-import { Command as CommandPrimitive } from "cmdk";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { api } from "@/utils/api"; // Đảm bảo import đúng module
 
 type VehicleType = Record<"value" | "label", string>;
 
-const VEHICLES = [
-  {
-    value: "car",
-    label: "Xe ôtô",
-  },
-  {
-    value: "motorcycle",
-    label: "Xe môtô/ xe gắn máy",
-  },
-  {
-    value: "bicycle",
-    label: "Xe đạp",
-  },
-  {
-    value: "none",
-    label: "Không có",
-  },
-] satisfies VehicleType[];
-
 export function VehicleAndHouseForm() {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<VehicleType[]>([]);
-  const [inputValue, setInputValue] = React.useState("");
   const [houseArea, setHouseArea] = React.useState("");
   const [internet, setInternet] = React.useState("");
   const [electricity, setElectricity] = React.useState("");
   const [water, setWater] = React.useState("");
   const [notes, setNotes] = React.useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const apartmentNo = Number(searchParams.get('apartmentNo'));
 
-  const handleUnselect = React.useCallback((vehicle: VehicleType) => {
-    setSelected((prev) => prev.filter((s) => s.value !== vehicle.value));
-  }, []);
+  const { data: vehicles = [], isLoading, isError, error } = api.resident.getVehiclesByApartment.useQuery({ apartmentNo });
 
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      const input = inputRef.current;
-      if (input) {
-        if (e.key === "Delete" || e.key === "Backspace") {
-          if (input.value === "") {
-            setSelected((prev) => {
-              const newSelected = [...prev];
-              newSelected.pop();
-              return newSelected;
-            });
-          }
-        }
-        if (e.key === "Escape") {
-          input.blur();
-        }
-      }
-    },
-    []
-  );
-
-  const selectables = VEHICLES.filter((vehicle) => {
-    if (selected.some((s) => s.value === "none")) {
-      // If "none" is selected, hide all other options
-      return vehicle.value === "none";
+  React.useEffect(() => {
+    if (vehicles.length > 0) {
+      const formattedVehicles: VehicleType[] = vehicles
+        .filter(vehicle => vehicle !== "Không") // Lọc phương tiện có nhãn hoặc giá trị là "không"
+        .map((vehicle) => ({
+          value: vehicle,
+          label: vehicle,
+        }));
+      setSelected(formattedVehicles);
     }
-    // Hide already selected vehicles and "none" if any other option is selected
-    return !selected.some((s) => s.value === vehicle.value) && vehicle.value !== "none";
-  });
+  }, [vehicles]);
+
+  const handleSubmit = () => {
+    router.push({
+      pathname: '/example/example-02/payment-form',
+      query: {
+        houseArea,
+        internet,
+        electricity,
+        water,
+        vehicles: selected.map(v => v.value).join(','),
+        apartmentNo
+      },
+    });
+  };
 
   const handleBack = () => {
     router.back();
   };
 
+  if (isLoading) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (isError) {
+    console.error(error);
+    return <div>Lỗi!. Vui lòng thử lại.</div>;
+  }
+
   return (
     <div className="space-y-4">
       <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
-        Chọn phương tiện:
+        Phương tiện:
       </label>
-      <Command
-        onKeyDown={handleKeyDown}
-        className="overflow-visible bg-transparent"
-      >
-        <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-          <div className="flex flex-wrap gap-1">
-            {selected.map((vehicle) => (
-              <Badge key={vehicle.value} variant="secondary">
-                {vehicle.label}
-                <button
-                  className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleUnselect(vehicle);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={() => handleUnselect(vehicle)}
-                >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                </button>
-              </Badge>
-            ))}
-            <CommandPrimitive.Input
-              ref={inputRef}
-              value={inputValue}
-              onValueChange={setInputValue}
-              onBlur={() => setOpen(false)}
-              onFocus={() => setOpen(true)}
-              placeholder="Chọn phương tiện..."
-              className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-            />
-          </div>
+      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+        <div className="flex flex-wrap gap-1">
+          {selected.map((vehicle) => (
+            <Badge key={vehicle.value} variant="secondary">
+              {vehicle.label}
+            </Badge>
+          ))}
+          <input
+            ref={inputRef}
+            value=""
+            readOnly
+            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground cursor-not-allowed"
+            onMouseDown={(e) => e.preventDefault()}
+          />
         </div>
-        <div className="relative mt-2">
-          {open && selectables.length > 0 ? (
-            <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-              <CommandGroup className="h-full overflow-auto">
-                {selectables.map((vehicle) => (
-                  <CommandItem
-                    key={vehicle.value}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onSelect={() => {
-                      setInputValue("");
-                      setSelected((prev) => [...prev, vehicle]);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    {vehicle.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </div>
-          ) : null}
-        </div>
-      </Command>
+      </div>
       <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
         Diện tích nhà (mét vuông):
       </label>
@@ -209,16 +146,16 @@ export function VehicleAndHouseForm() {
           placeholder="Ghi chú..."
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
-        </div>
-        <div className="space-x-4">
+      </div>
+      <div className="space-x-4">
         <Button className="ml-auto" size="sm" onClick={handleBack}>
           Quay lại
         </Button>
-        
-        <Button className="ml-auto" size="sm">
+
+        <Button className="ml-auto" size="sm" onClick={handleSubmit}>
           Xác nhận
         </Button>
-        </div>
+      </div>
     </div>
   );
 }
