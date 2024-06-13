@@ -86,7 +86,7 @@ const ApartmentSelectorPage = () => {
         <div className="flex items-center justify-between">
           <Heading
             title="Chọn Phòng Chung Cư"
-            description="Chọn phòng chung cư của bạn"
+            description=""
           />
         </div>
         <Separator />

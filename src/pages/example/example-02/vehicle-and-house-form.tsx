@@ -29,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { VehicleAndHouseForm } from "@/components/page-component/example/example-02/vehicle-and-house-form";
 
 const Example02 = () => {
+
   return (
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 p-4 md:p-8">
