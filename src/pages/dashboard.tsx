@@ -12,13 +12,8 @@ import {Tabs, TabsList, TabsTrigger, TabsContent} from "@/components/ui/tabs";
 import {CalendarDateRangePicker} from "@/components/dashboard/date-range-picker";
 import {Overview} from "@/components/dashboard/overview";
 import {RecentSales} from "@/components/dashboard/recent-sales";
-import {useSession} from "next-auth/react";
 
 const Dashboard = () => {
-  const { data: session } = useSession();
-  if (!session) {
-    return <div>Not authenticated</div>;
-  }
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

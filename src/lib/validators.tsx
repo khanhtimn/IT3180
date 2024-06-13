@@ -34,7 +34,7 @@ export const updateResidentFormSchema = z.object({
 
 export const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(4).max(12),
+  password: z.string().min(4).max(32),
 });
 
 export type ILogin = z.infer<typeof loginSchema>;
