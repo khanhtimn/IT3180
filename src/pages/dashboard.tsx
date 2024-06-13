@@ -7,20 +7,25 @@ import {
   CardDescription,
   Card,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
-import { Overview } from "@/components/dashboard/overview";
-import { RecentSales } from "@/components/dashboard/recent-sales";
+import {Button} from "@/components/ui/button";
+import {Tabs, TabsList, TabsTrigger, TabsContent} from "@/components/ui/tabs";
+import {CalendarDateRangePicker} from "@/components/dashboard/date-range-picker";
+import {Overview} from "@/components/dashboard/overview";
+import {RecentSales} from "@/components/dashboard/recent-sales";
+import {useSession} from "next-auth/react";
 
 const Dashboard = () => {
+  const { data: session } = useSession();
+  if (!session) {
+    return <div>Not authenticated</div>;
+  }
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker />
+            <CalendarDateRangePicker/>
             <Button size="sm">Download</Button>
           </div>
         </div>
@@ -54,7 +59,7 @@ const Dashboard = () => {
                     strokeWidth="2"
                     className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -79,9 +84,9 @@ const Dashboard = () => {
                     strokeWidth="2"
                     className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -104,8 +109,8 @@ const Dashboard = () => {
                     strokeWidth="2"
                     className="h-4 w-4 text-muted-foreground"
                   >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <path d="M2 10h20"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -130,7 +135,7 @@ const Dashboard = () => {
                     strokeWidth="2"
                     className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -147,7 +152,7 @@ const Dashboard = () => {
                   <CardTitle>Overview</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
-                  <Overview />
+                  <Overview/>
                 </CardContent>
               </Card>
               <Card className="col-span-3">
@@ -158,7 +163,7 @@ const Dashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentSales />
+                  <RecentSales/>
                 </CardContent>
               </Card>
             </div>

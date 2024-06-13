@@ -1,82 +1,140 @@
-import Link from "next/link";
-import {useCallback} from "react";
-import {SessionProvider, signIn} from "next-auth/react";
-import {useForm, Controller} from "react-hook-form";
+import {ILogin, loginSchema} from "@/lib/validators";
+import {useRouter} from "next/navigation";
+import {useState} from "react";
+import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {loginSchema, type ILogin} from "@/lib/validators";
+import {signIn} from "next-auth/react";
+import {Form, FormControl, FormField, FormItem, FormLabel} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
 
-const Home = () => {
-  const {handleSubmit, control, reset} = useForm<ILogin>({
-    defaultValues: {
+interface ILoginProps {
+  initialData: ILogin | null | undefined;
+}
+
+const Home = ({initialData}: ILoginProps) => {
+  const toastMessageSuccess = "Dang nhap thành công";
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<ILogin>({
+    defaultValues: initialData || {
       email: "",
       password: "",
     },
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = useCallback(
-    async (data: ILogin) => {
-      try {
-        await signIn("credentials", {...data, callbackUrl: "/dashboard"});
-        reset();
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [reset]
-  );
+  // const { mutate: signIn } = api.user.login.useMutation({
+  //   onError: (err) => {
+  //     toast.error(err.message);
+  //     setLoading(false);
+  //   },
+  //   onSuccess: async (data) =>  {
+  //     toast.success(toastMessageSuccess);
+  //     // Store the token in cookies
+  //     if (data.token) {
+  //       Cookies.set("token", data.token, { expires: 1 }); // Cookie expires in 1 day
+  //     }
+  //     setLoading(false);
+  //     await getSession(); // Ensure the session is fetched
+  //     router.push("/dashboard");
+  //   },
+  // });
+
+
+  // const onSubmit = (values: ILogin) => {
+  //   setLoading(true);
+  //   signIn({ ...values });
+  // };
+
+
+  const onSubmit = async (values: ILogin) => {
+    setLoading(true);
+    // const result = signIn('credentials', {
+    //   redirect: false,
+    //   email: values.email,
+    //   password: values.password,
+    //   callbackUrl: "/dashboard",
+    // });
+    //
+    // if (result?.error) {
+    //   toast.error(result.error);
+    //   setLoading(false);
+    // } else {
+    //   toast.success(toastMessageSuccess);
+    await signIn("credentials", {...values, callbackUrl: "/dashboard"});
+    //router.push( "/dashboard");
+    setLoading(false);
+  }
+
 
   return (
-    <SessionProvider>
-      <div>
-        <main>
+    <div>
+      <main>
+        <Form {...form}>
           <form
-            className="flex items-center justify-center h-screen w-full"
-            onSubmit={handleSubmit(onSubmit)}
+            /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-8"
           >
-            <div className="card w-96 bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">Welcome back!</h2>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({field}) => (
-                    <input
-                      type="email"
-                      placeholder="Type your email..."
-                      className="input input-bordered w-full max-w-xs"
-                      {...field}
-                    />
-                  )}
-                />
+            <div className="grid-cols-3 gap-8 md:grid">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Họ & Tên</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Email"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({field}) => (
-                    <input
-                      type="password"
-                      placeholder="Type your password..."
-                      className="input input-bordered w-full max-w-xs my-2"
-                      {...field}
-                    />
-                  )}
-                />
-                <div className="card-actions items-center justify-between">
-                  <Link href="/register" className="link">
-                    Go to sign up
-                  </Link>
-
-                  <button className="btn btn-secondary" type="submit">
-                    Login
-                  </button>
-                </div>
-              </div>
+            <div className="grid-cols-3 gap-8 md:grid">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Mat khau</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Password"
+                        type="password"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-x-4">
+              <Button disabled={loading} className="ml-auto" type="submit">
+                Dang nhap
+              </Button>
+              <Button
+                disabled={loading}
+                className="ml-auto"
+                type="button"
+                onClick={() => {
+                  router.push("/register");
+                }}
+              >
+                Dang ky
+              </Button>
             </div>
           </form>
-        </main>
-      </div>
-    </SessionProvider>
+        </Form>
+      </main>
+    </div>
   );
 };
 

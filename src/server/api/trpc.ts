@@ -22,6 +22,8 @@ import { prisma } from "@/server/db";
 
 type CreateContextOptions = {
   session: Session | null;
+  req: CreateNextContextOptions["req"];
+  res: CreateNextContextOptions["res"];
 };
 
 /**
@@ -37,6 +39,8 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
+    req: opts.req,
+    res: opts.res,
     prisma,
   };
 };
@@ -51,10 +55,12 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res});
+  const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
     session,
+    req,
+    res,
   });
 };
 
@@ -68,7 +74,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import {createReactQueryHooks} from "@trpc/react-query";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

@@ -63,6 +63,7 @@ export const authOptions: NextAuthOptions = {
           const isValidPassword = await verify(result.password, password);
 
           if (!isValidPassword) return null;
+          console.log("Credentials received:", credentials);
 
           return {id: result.id, email};
         } catch {
@@ -72,47 +73,34 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/require-await
-    jwt: async ({token, user}) => {
-      console.log("JWT callback:", token, user);
+    session: ({session, token}) => {
+      console.log(session)
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+        }
+      }
+    },
+    jwt: ({user, token}) => {
+      console.log(token)
       if (user) {
-        token.userId = user.id;
-        token.email = user.email;
+        return {
+          ...token,
+          ...user,
+        }
       }
-
-      return token;
-    },
-
-    session: async ({session, token}) => {
-      console.log("Session callback:", session, token);
-      if (token) {
-        session.user.id = token.userId;
-        session.user.email = token.email;
-      }
-      return session;
-    },
-
-    // session: ({session, token}) => ({
-    //   strategy: "jwt",
-    //   maxAge: 60 * 60 * 24, // 1 Day
-    //   ...session,
-    //   user: {
-    //     ...session.user,
-    //     email: token.email,
-    //     id: token.id,
-    //   },
-    // }),
+      return token
+    }
   },
-  secret: process.env.NEXTAUTH_SECRET,
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-    encryption: true,
-    maxAge: 5 * 60 * 1000,
+  session: {
+    strategy: 'jwt'
   },
 
   pages: {
     signIn: "/",
-    newUser: "/sign-up",
+    newUser: "/register",
   },
 };
 
