@@ -1,48 +1,207 @@
 // pages/example/example-02/payment-form.tsx
-"use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-const calculateTotal = (houseArea, internet, electricity, water, vehicles) => {
-  // Ví dụ: tính toán số tiền phải trả
-  const houseCost = houseArea * 10000; // Giả sử 10,000 VND/m2
-  const internetCost = 200000; // Giả sử gói cước internet là 200,000 VND
-  const electricityCost = electricity * 3000; // Giả sử 3,000 VND/kWh
-  const waterCost = water * 5000; // Giả sử 5,000 VND/m3
-  const vehicleCost = vehicles.length * 100000; // Giả sử mỗi phương tiện 100,000 VND
-
-  return houseCost + internetCost + electricityCost + waterCost + vehicleCost;
-};
-
-export default function PaymentForm() {
-  const searchParams = useSearchParams();
+const PaymentForm = () => {
   const router = useRouter();
-  const houseArea = Number(searchParams.get('houseArea'));
-  const internet = searchParams.get('internet');
-  const electricity = Number(searchParams.get('electricity'));
-  const water = Number(searchParams.get('water'));
-  const vehicles = searchParams.get('vehicles')?.split(',') || [];
-  const apartmentNo = Number(searchParams.get('apartmentNo'));
-  const notes = searchParams.get('notes');
+  const searchParams = useSearchParams();
 
-  const total = calculateTotal(houseArea, internet, electricity, water, vehicles);
+  const houseArea = searchParams.get("houseArea");
+  const internet = searchParams.get("internet");
+  const electricity = searchParams.get("electricity");
+  const water = searchParams.get("water");
+  const contribute = searchParams.get("contribute");
+  const notes = searchParams.get("notes");
+  const vehicles = searchParams.get("vehicles");
+  const apartmentNo = searchParams.get("apartmentNo");
+  const residentId = searchParams.get("residentId");
+
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const internetLabels = {
+    Internet0: "Không có",
+    Internet1: "Internet1",
+    Internet2: "Internet2",
+    Internet3: "Internet3",
+  };
+
+  const calculateElectricityCost = (kWh) => {
+    const rates = [
+      { max: 50, rate: 1806 },
+      { max: 100, rate: 1866 },
+      { max: 200, rate: 2167 },
+      { max: 300, rate: 2729 },
+      { max: 400, rate: 3050 },
+      { max: Infinity, rate: 3151 },
+    ];
+
+    let cost = 0;
+    let remainingKWh = kWh;
+
+    for (const tier of rates) {
+      if (remainingKWh <= 0) break;
+      const kWhInThisTier = Math.min(remainingKWh, tier.max - (tier.max === Infinity ? 0 : (tier.max - 50)));
+      cost += kWhInThisTier * tier.rate;
+      remainingKWh -= kWhInThisTier;
+    }
+
+    return cost;
+  };
+
+  const calculateWaterCost = (cubicMeters) => {
+    const rates = [
+      { max: 10, rate: 5973 },
+      { max: 20, rate: 7052 },
+      { max: 30, rate: 8669 },
+      { max: Infinity, rate: 15929 },
+    ];
+
+    let cost = 0;
+    let remainingCubicMeters = cubicMeters;
+
+    for (const tier of rates) {
+      if (remainingCubicMeters <= 0) break;
+      const cubicMetersInThisTier = Math.min(remainingCubicMeters, tier.max - (tier.max === Infinity ? 0 : (tier.max - 10)));
+      cost += cubicMetersInThisTier * tier.rate;
+      remainingCubicMeters -= cubicMetersInThisTier;
+    }
+
+    return cost;
+  };
+
+  const calculateVehicleCost = (vehicles) => {
+    const vehicleArray = vehicles.split(",");
+    let cost = 0;
+    vehicleArray.forEach((vehicle) => {
+      switch (vehicle) {
+        case "Xe đạp":
+          cost += 30000;
+          break;
+        case "Xe môtô / Xe gắn máy":
+          cost += 70000;
+          break;
+        case "Xe ôtô":
+          cost += 1200000;
+          break;
+        default:
+          break;
+      }
+    });
+    return cost;
+  };
+
+  useEffect(() => {
+    // Calculate total amount based on input values
+    let amount = 0;
+
+    if (houseArea) {
+      amount += parseFloat(houseArea) * 15000;
+    }
+    if (internet) {
+      switch (internet) {
+        case "Không có":
+          amount += 0;
+          break;
+        case "Internet1":
+          amount += 330000;
+          break;
+        case "Internet2":
+          amount += 875600;
+          break;
+        case "Internet3":
+          amount += 1075600;
+          break;
+      }
+    }
+    if (electricity) {
+      amount += calculateElectricityCost(parseFloat(electricity));
+    }
+    if (water) {
+      amount += calculateWaterCost(parseFloat(water));
+    }
+    if (contribute) {
+      amount += parseFloat(contribute.replace(/[^0-9]/g, ""));
+    }
+    if (vehicles) {
+      amount += calculateVehicleCost(vehicles);
+    }
+
+    setTotalAmount(amount);
+  }, [houseArea, internet, electricity, water, contribute, vehicles]);
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  const handleSave = async () => {
+    const response = await fetch("/api/resident/createFee", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "House and Vehicle",
+        amount: totalAmount,
+        dueDate: new Date().toISOString(),
+        isPaid: false,
+        apartmentNo: parseInt(apartmentNo as string),
+        residentId,
+      }),
+    });
+
+    if (response.ok) {
+      router.push("/success");
+    } else {
+      console.error("Failed to save fee");
+    }
+  };
 
   return (
-    <div className="space-y-4 p-4">
-      <h1 className="text-xl font-bold">Tổng hợp chi phí</h1>
-      <p>Phòng: {apartmentNo}</p>
-      <p>Diện tích nhà: {houseArea} m²</p>
-      <p>Internet: {internet}</p>
-      <p>Số điện: {electricity} kWh</p>
-      <p>Nước: {water} m³</p>
-      <p>Phương tiện: {vehicles.join(', ')}</p>
-      <p>Ghi chú: {notes}</p>
-      <h2 className="text-lg font-bold">Tổng tiền: {total} VND</h2>
-      <Button size="sm" onClick={() => router.back()}>
-        Quay lại
-      </Button>
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <p>
+          <strong>Diện tích nhà:</strong> {houseArea} m²
+        </p>
+        <p>
+          <strong>Gói cước internet:</strong> {internetLabels[internet]}
+        </p>
+        <p>
+          <strong>Số điện tiêu thụ:</strong> {electricity} kWh
+        </p>
+        <p>
+          <strong>Số lượng nước tiêu thụ:</strong> {water} khối
+        </p>
+        <p>
+          <strong>Khoản đóng góp:</strong> {contribute} VNĐ
+        </p>
+        <p>
+          <strong>Phí gửi xe:</strong> {vehicles}
+        </p>
+        <p>
+          <strong>Số phòng:</strong> {apartmentNo}
+        </p>
+        <p>
+          <strong>Tổng số tiền:</strong> {totalAmount} VNĐ
+        </p>
+        {notes && (
+          <p>
+            <strong>Ghi chú:</strong> {notes}
+          </p>
+        )}
+      </div>
+      <div className="space-x-4">
+        <Button className="ml-auto" size="sm" onClick={handleBack}>
+          Quay lại
+        </Button>
+
+        <Button className="ml-auto" size="sm" onClick={handleSave}>
+          Lưu
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default PaymentForm;

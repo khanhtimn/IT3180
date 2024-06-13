@@ -1,7 +1,7 @@
 import React from "react";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
-import  PaymentForm  from "@/components/page-component/example/example-02/payment-form";
+import  PaymentForm   from "@/components/page-component/example/example-02/payment-form";
 
 const paymentFormPage = () => {
     return ( 

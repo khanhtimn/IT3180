@@ -31,3 +31,17 @@ export const updateResidentFormSchema = z.object({
   apartmentNo: z.number().int().nonnegative(),
   vehicle: z.string(),
 });
+// New fee schema based on Prisma model
+export const feeFormSchema = z.object({
+  type: z.string().min(1),
+  amount: z.number().nonnegative(),
+  dueDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: "Invalid date format",
+  }),
+  isPaid: z.boolean(),
+  apartmentNo: z.number().int().nonnegative().optional(),
+  residentId: z.string().optional(),
+});
+
+export type FeeFormValues = z.infer<typeof feeFormSchema>;
+

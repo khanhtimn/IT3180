@@ -89,11 +89,17 @@
 // });
 
 // server/api/routers/residentRouter.ts
+
 // server/api/routers/residentRouter.ts
+
 import { z } from "zod";
-import { format } from "date-fns";
-import { type ResidentColumn, residentFormSchema, updateResidentFormSchema } from "@/lib/validators";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  residentFormSchema,
+  updateResidentFormSchema,
+  feeFormSchema,
+} from "@/lib/validators";
+import { format } from "date-fns";
 
 export const residentRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -103,7 +109,7 @@ export const residentRouter = createTRPCRouter({
       },
     });
 
-    const formattedResident: ResidentColumn[] = resident.map((item) => ({
+    const formattedResident = resident.map((item) => ({
       id: item.id,
       name: item.name,
       nationalId: item.nationalId,
@@ -125,7 +131,6 @@ export const residentRouter = createTRPCRouter({
   create: publicProcedure
     .input(residentFormSchema)
     .mutation(async ({ ctx, input }) => {
-      // Ensure the apartmentNo exists in the Apartment table
       const apartmentExists = await ctx.prisma.apartment.findUnique({
         where: { apartmentNo: input.apartmentNo },
       });
@@ -142,7 +147,6 @@ export const residentRouter = createTRPCRouter({
   update: publicProcedure
     .input(updateResidentFormSchema)
     .mutation(async ({ ctx, input }) => {
-      // Ensure the apartmentNo exists in the Apartment table
       const apartmentExists = await ctx.prisma.apartment.findUnique({
         where: { apartmentNo: input.apartmentNo },
       });
@@ -167,7 +171,7 @@ export const residentRouter = createTRPCRouter({
     const apartments = await ctx.prisma.apartment.findMany({
       where: {
         residents: {
-          some: {}, // Chỉ lấy các căn hộ có thông tin người dân
+          some: {},
         },
       },
       select: {
@@ -179,17 +183,50 @@ export const residentRouter = createTRPCRouter({
   }),
 
   getVehiclesByApartment: publicProcedure
-  .input(z.object({ apartmentNo: z.number().int().nonnegative() }))
-  .query(async ({ ctx, input }) => {
-    const residents = await ctx.prisma.resident.findMany({
-      where: { apartmentNo: input.apartmentNo },
-      select: { vehicle: true },
-    });
+    .input(z.object({ apartmentNo: z.number().int().nonnegative() }))
+    .query(async ({ ctx, input }) => {
+      const residents = await ctx.prisma.resident.findMany({
+        where: { apartmentNo: input.apartmentNo },
+        select: { vehicle: true },
+      });
 
-    const vehicles = residents.map((resident) => resident.vehicle);
-    return vehicles;
-  }),
+      const vehicles = residents.map((resident) => resident.vehicle);
+      return vehicles;
+    }),
 
-  
+  createFee: publicProcedure
+    .input(feeFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      const fee = await ctx.prisma.fee.create({
+        data: {
+          type: input.type,
+          amount: input.amount,
+          dueDate: new Date(input.dueDate),
+          isPaid: input.isPaid,
+          apartment: input.apartmentNo
+            ? {
+                connect: {
+                  apartmentNo: input.apartmentNo,
+                },
+              }
+            : undefined,
+          resident: input.residentId
+            ? {
+                connect: {
+                  id: input.residentId,
+                },
+              }
+            : undefined,
+        },
+      });
+
+      return fee;
+    }),
+    
+    getAllFees: publicProcedure.query(async ({ ctx }) => {
+      return await ctx.prisma.fee.findMany();
+    }),
 });
+
+export default residentRouter;
 
