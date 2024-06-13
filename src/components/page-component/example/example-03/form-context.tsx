@@ -7,7 +7,6 @@ import {
 } from "react";
 
 interface TFormData {
-  username: string;
   email: string;
   password: string;
 }
@@ -27,7 +26,6 @@ const FormContext = createContext<FormContextProps>({
   onHandleBack: () => {},
   step: 1,
   formData: {
-    username: "",
     email: "",
     password: "",
   },
@@ -42,7 +40,6 @@ interface FormProviderProps {
 export function FormProvider({ children }: FormProviderProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<TFormData>({
-    username: "",
     email: "",
     password: "",
   });

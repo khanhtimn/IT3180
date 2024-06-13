@@ -51,11 +51,14 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String   @unique
+  password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  createAt      DateTime  @default(now()) @map("create_at")
+  updateAt      DateTime  @default(now()) @updatedAt @map("update_at")
 }
 
 model VerificationToken {
