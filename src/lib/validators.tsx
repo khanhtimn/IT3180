@@ -32,6 +32,19 @@ export const updateResidentFormSchema = z.object({
   vehicle: z.string(),
 });
 
+export const feeFormSchema = z.object({
+  type: z.string().min(1),
+  amount: z.number().nonnegative(),
+  dueDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: "Invalid date format",
+  }),
+  isPaid: z.boolean(),
+  apartmentNo: z.number().int().nonnegative().optional(),
+  residentId: z.string().optional(),
+});
+
+export type FeeFormValues = z.infer<typeof feeFormSchema>;
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(4).max(32),
