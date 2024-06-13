@@ -1,6 +1,5 @@
 import React from "react";
 import { useFormState } from "./form-context";
-import UsernameForm from "./username-form";
 import EmailForm from "./email-form";
 import PasswordForm from "./password-form";
 
@@ -9,10 +8,8 @@ const FormStep = () => {
 
   switch (step) {
     case 1:
-      return <UsernameForm />;
-    case 2:
       return <EmailForm />;
-    case 3:
+    case 2:
       return <PasswordForm />;
     default:
       return null;

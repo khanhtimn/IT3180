@@ -31,7 +31,7 @@ export const updateResidentFormSchema = z.object({
   apartmentNo: z.number().int().nonnegative(),
   vehicle: z.string(),
 });
-// New fee schema based on Prisma model
+
 export const feeFormSchema = z.object({
   type: z.string().min(1),
   amount: z.number().nonnegative(),
@@ -45,3 +45,9 @@ export const feeFormSchema = z.object({
 
 export type FeeFormValues = z.infer<typeof feeFormSchema>;
 
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(4).max(32),
+});
+
+export type ILogin = z.infer<typeof loginSchema>;
