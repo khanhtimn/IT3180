@@ -40,8 +40,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <div className="flex justify-between items-center">
-                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                    Occupied Apartments
+                  <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-gray-900">
+                    Thông tin căn hộ
                   </Dialog.Title>
                   <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
                     <XIcon className="h-6 w-6" />
