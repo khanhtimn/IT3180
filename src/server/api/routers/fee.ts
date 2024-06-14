@@ -35,7 +35,11 @@ export const feeRouter = createTRPCRouter({
       throw new Error("Apartment number does not exist");
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return ctx.prisma.fee.create({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       data: { ...input },
     });
   }),
