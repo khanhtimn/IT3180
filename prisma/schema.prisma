@@ -51,7 +51,7 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String   @unique
+  email         String    @unique
   password      String?
   emailVerified DateTime?
   image         String?
@@ -76,8 +76,7 @@ model Resident {
   gender      String    @map("gender")
   vehicle     String    @map("vehicle")
   apartment   Apartment @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
-  apartmentNo Int      @map("apartmentNo")
-  fees        Fee[]
+  apartmentNo Int       @map("apartmentNo")
   createAt    DateTime  @default(now()) @map("create_at")
   updateAt    DateTime  @default(now()) @updatedAt @map("update_at")
 }
@@ -85,22 +84,23 @@ model Resident {
 model Apartment {
   id          Int        @id @default(autoincrement())
   apartmentNo Int        @unique
+  size        Int
   residents   Resident[]
   fees        Fee[]
 }
 
 model Fee {
-  id          String     @id @default(cuid())
-  type        String     @map("type")
-  amount      Float      @map("amount")
-  dueDate     DateTime   @map("dueDate")
-  isPaid      Boolean    @default(false) @map("isPaid")
-  apartment   Apartment? @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
-  apartmentNo Int?
-  resident    Resident?  @relation(fields: [residentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  residentId  String?
-  createAt    DateTime   @default(now()) @map("create_at")
-  updateAt    DateTime   @default(now()) @updatedAt @map("update_at")
-
-  @@index([residentId])
+  id              String     @id @default(cuid())
+  internetFee     Int
+  electricityFee  Int
+  waterFee        Int
+  contributionFee Int?
+  notes           String?
+  totalAmount     Float      @map("amount")
+  dueDate         DateTime   @map("dueDate")
+  isPaid          Boolean    @default(false) @map("isPaid")
+  apartment       Apartment @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
+  apartmentNo     Int
+  createAt        DateTime   @default(now()) @map("create_at")
+  updateAt        DateTime   @default(now()) @updatedAt @map("update_at")
 }

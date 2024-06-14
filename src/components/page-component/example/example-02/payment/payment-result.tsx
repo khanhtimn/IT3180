@@ -1,10 +1,13 @@
-// pages/example/example-02/payment-form.tsx
+import React, {useState, useEffect} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import {Button} from "@/components/ui/button";
+import {api} from "@/utils/api";
+import toast from "react-hot-toast";
+import type {feeFormValues} from "@/lib/validators";
 
-import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-
-const PaymentForm = () => {
+const PaymentResult = () => {
+  const toastMessageSuccess = "Tạo phí thành công";
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -16,7 +19,6 @@ const PaymentForm = () => {
   const notes = searchParams.get("notes");
   const vehicles = searchParams.get("vehicles");
   const apartmentNo = searchParams.get("apartmentNo");
-  const residentId = searchParams.get("residentId");
 
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -29,12 +31,12 @@ const PaymentForm = () => {
 
   const calculateElectricityCost = (kWh) => {
     const rates = [
-      { max: 50, rate: 1806 },
-      { max: 100, rate: 1866 },
-      { max: 200, rate: 2167 },
-      { max: 300, rate: 2729 },
-      { max: 400, rate: 3050 },
-      { max: Infinity, rate: 3151 },
+      {max: 50, rate: 1806},
+      {max: 100, rate: 1866},
+      {max: 200, rate: 2167},
+      {max: 300, rate: 2729},
+      {max: 400, rate: 3050},
+      {max: Infinity, rate: 3151},
     ];
 
     let cost = 0;
@@ -52,10 +54,10 @@ const PaymentForm = () => {
 
   const calculateWaterCost = (cubicMeters) => {
     const rates = [
-      { max: 10, rate: 5973 },
-      { max: 20, rate: 7052 },
-      { max: 30, rate: 8669 },
-      { max: Infinity, rate: 15929 },
+      {max: 10, rate: 5973},
+      {max: 20, rate: 7052},
+      {max: 30, rate: 8669},
+      {max: Infinity, rate: 15929},
     ];
 
     let cost = 0;
@@ -135,27 +137,32 @@ const PaymentForm = () => {
     router.back();
   };
 
-  const handleSave = async () => {
-    const response = await fetch("/api/resident/createFee", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "House and Vehicle",
-        amount: totalAmount,
-        dueDate: new Date().toISOString(),
-        isPaid: false,
-        apartmentNo: parseInt(apartmentNo as string),
-        residentId,
-      }),
-    });
+  const {mutate: createFee} = api.fee.create.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onSuccess: (data) => {
+      toast.success(toastMessageSuccess);
+      handleBack();
+    },
+  });
 
-    if (response.ok) {
-      router.push("/success");
-    } else {
-      console.error("Failed to save fee");
-    }
+  const handleSave = (values: feeFormValues) => {
+    setLoading(true);
+    createFee({
+      values: {
+        totalAmount: totalAmount,
+        internetFee: internet,
+        electricityFee: electricity,
+        waterFee: water,
+        contributionFee: contribute,
+        notes: notes || null,
+        apartmentNo: apartmentNo,
+        dueDate: Date,
+        isPaid: false,
+      }
+    });
+    setLoading(false);
   };
 
   return (
@@ -204,4 +211,4 @@ const PaymentForm = () => {
   );
 };
 
-export default PaymentForm;
+export default PaymentResult;

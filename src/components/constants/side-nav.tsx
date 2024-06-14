@@ -27,12 +27,6 @@ export const NavItems: NavItem[] = [
         color: "text-red-500",
         href: "/example/example-02",
       },
-      {
-        title: "Example-03",
-        icon: BookOpenCheck,
-        color: "text-red-500",
-        href: "/example/example-03",
-      },
     ],
   },
 ];

@@ -1,7 +1,7 @@
 import React from "react";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
-import  PaymentForm   from "@/components/page-component/example/example-02/payment-form";
+import PaymentResult from "@/components/page-component/example/example-02/payment/payment-result";
 
 const paymentFormPage = () => {
     return ( 
@@ -12,7 +12,7 @@ const paymentFormPage = () => {
                     description = " " />
                 </div> 
                 <Separator />
-                <PaymentForm />
+                <PaymentResult />
             </div> 
         </div>
     )

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/utils/api"; // Đảm bảo import đúng module
+import { api } from "@/utils/api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
@@ -10,12 +10,12 @@ export function ApartmentSelector() {
   const [selected, setSelected] = useState<string | null>(null);
   const router = useRouter();
 
-  const { data: apartments = [], isLoading } = api.resident.getApartmentsWithResidents.useQuery();
+  const { data: apartments = [], isLoading } = api.apartment.getApartmentsWithResidents.useQuery();
 
   const handleConfirm = () => {
     if (selected) {
       router.push({
-        pathname: "/example/example-02/vehicle-and-house-form",
+        pathname: "/example/example-02/payment/create",
         query: { apartmentNo: selected },
       });
     }
