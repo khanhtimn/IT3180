@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
                 <div className="mt-4">
                   {apartmentList.map((apartment) => (
                     <div key={apartment.apartmentNo} className="mb-4">
-                      <h4 className="font-bold">Apartment No: {apartment.apartmentNo}</h4>
+                      <h4 className="font-bold">Căn hộ số: {apartment.apartmentNo}</h4>
                       <ul className="list-disc list-inside">
                         {apartment.residents.map((resident) => (
                           <li key={resident.id}>{resident.name}</li>
