@@ -2,8 +2,11 @@ import React from "react";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApartmentSelector } from "@/components/page-component/example/example-02/apartment-selector";
+import {FeeList} from "@/components/page-component/example/example-02/fee";
+import {api} from "@/utils/api";
 
 const ApartmentSelectorPage = () => {
+  const { data, isLoading, isError, error } = api.fee.getAll.useQuery();
 
   return (
     <div className="flex flex-col">
@@ -20,7 +23,7 @@ const ApartmentSelectorPage = () => {
         </div>
         <ApartmentSelector/>
         <Separator/>
-
+        <FeeList data={data}/>
       </div>
     </div>
   );

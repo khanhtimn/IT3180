@@ -61,6 +61,25 @@ export const updateFeeFormSchema = feeFormSchema.extend({
   id: z.string(),
 });
 
+export const feeColumn = z.object({
+  id: z.string(),
+  apartmentNo: z.number(),
+  apartmentSizeFee: z.number(),
+  internetFee: z.number(),
+  electricityFee: z.number(),
+  waterFee: z.number(),
+  contributionFee: z.number(),
+  vehicleFee: z.number(),
+  notes: z.string(),
+  totalAmount: z.number(),
+  dueDate: z.date(),
+  isPaid: z.boolean(),
+  createAt: z.date(),
+  updateAt: z.date(),
+});
+
+export type FeeColumns = z.infer<typeof feeColumn>;
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(4).max(32),
