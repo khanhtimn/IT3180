@@ -3,7 +3,7 @@ import { type NavItem } from "@/types";
 
 export const NavItems: NavItem[] = [
   {
-    title: "Dashboard",
+    title: "Trang chủ",
     icon: LayoutDashboard,
     href: "/dashboard",
     color: "text-sky-500",
