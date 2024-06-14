@@ -1,14 +1,40 @@
 import {z} from "zod";
 import {createTRPCRouter, publicProcedure} from "@/server/api/trpc";
 import {feeFormSchema, updateFeeFormSchema} from "@/lib/validators";
+import { format } from "date-fns";
 
 export const feeRouter = createTRPCRouter({
+  // getAll: publicProcedure.query(async ({ ctx }) => {
+  //   return ctx.prisma.fee.findMany({
+  //     orderBy: {
+  //       createAt: "desc",
+  //     },
+  //   });
+  // }),
+
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.fee.findMany({
+    const fee = await ctx.prisma.fee.findMany({
       orderBy: {
         createAt: "desc",
       },
     });
+
+    return fee.map((item) => ({
+      id: item.id,
+      apartmentNo: item.apartmentNo,
+      apartmentSizeFee: item.apartmentSizeFee,
+      internetFee: item.internetFee,
+      electricityFee: item.electricityFee,
+      waterFee: item.waterFee,
+      contributionFee: item.contributionFee,
+      vehicleFee: item.vehicleFee,
+      notes: item.notes,
+      totalAmount: item.totalAmount,
+      dueDate: format(item.dueDate, "dd/MM/yyyy"),
+      isPaid: item.isPaid,
+      createAt: format(item.createAt, "dd/MM/yyyy"),
+      updateAt: format(item.updateAt, "dd/MM/yyyy"),
+    }));
   }),
 
   getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
@@ -27,8 +53,6 @@ export const feeRouter = createTRPCRouter({
       throw new Error("Apartment number does not exist");
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return ctx.prisma.fee.create({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

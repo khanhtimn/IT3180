@@ -48,7 +48,7 @@ export function CellAction({ data }: CellActionProps) {
               size="icon"
               className="hover:bg-secondary"
               onClick={() => {
-                router.push(`/example/example-02/payment/${data.id}`);
+                router.push(`/example/example-02/${data.id}`);
               }}
             >
               <Pencil className="h-4 w-4 text-foreground" />

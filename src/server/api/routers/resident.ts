@@ -3,7 +3,6 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import {
   residentFormSchema,
   updateResidentFormSchema,
-  feeFormSchema,
 } from "@/lib/validators";
 import { format } from "date-fns";
 
