@@ -32,18 +32,34 @@ export const updateResidentFormSchema = z.object({
   vehicle: z.string(),
 });
 
-export const feeFormSchema = z.object({
-  type: z.string().min(1),
-  amount: z.number().nonnegative(),
-  dueDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid date format",
-  }),
-  isPaid: z.boolean(),
-  apartmentNo: z.number().int().nonnegative().optional(),
-  residentId: z.string().optional(),
+export const apartmentFormSchema = z.object({
+  apartmentNo: z.number(),
+  size: z.number(),
 });
 
-export type FeeFormValues = z.infer<typeof feeFormSchema>;
+export const updateApartmentFormSchema = apartmentFormSchema.extend({
+  id: z.number(),
+});
+
+export const feeFormSchema = z.object({
+  apartmentNo: z.number(),
+  apartmentSizeFee: z.number().nonnegative(),
+  internetFee: z.number().nonnegative(),
+  electricityFee: z.number().nonnegative(),
+  waterFee: z.number().nonnegative(),
+  contributionFee: z.number().nonnegative().optional(),
+  vehicleFee: z.number().nonnegative().optional(),
+  notes: z.string().optional(),
+  totalAmount: z.number().nonnegative(),
+  dueDate: z.coerce.date(),
+  isPaid: z.boolean(),
+});
+
+export type feeFormValues = z.infer<typeof feeFormSchema>;
+
+export const updateFeeFormSchema = feeFormSchema.extend({
+  id: z.string(),
+});
 
 export const loginSchema = z.object({
   email: z.string().email(),
