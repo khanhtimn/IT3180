@@ -47,6 +47,7 @@ export const feeFormSchema = z.object({
   electricityFee: z.number().nonnegative(),
   waterFee: z.number().nonnegative(),
   contributionFee: z.number().nonnegative().optional(),
+  vehicleFee: z.number().nonnegative().optional(),
   notes: z.string().optional(),
   totalAmount: z.number().nonnegative(),
   dueDate: z.date(),
@@ -58,8 +59,6 @@ export type feeFormValues = z.infer<typeof feeFormSchema>;
 export const updateFeeFormSchema = feeFormSchema.extend({
   id: z.string(),
 });
-
-
 
 export const loginSchema = z.object({
   email: z.string().email(),

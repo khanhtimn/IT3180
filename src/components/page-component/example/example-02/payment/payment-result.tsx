@@ -1,13 +1,24 @@
-import React, {useState, useEffect} from "react";
-import {useRouter, useSearchParams} from "next/navigation";
-import {Button} from "@/components/ui/button";
-import {api} from "@/utils/api";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import type {feeFormValues} from "@/lib/validators";
+import { Button } from "@/components/ui/button";
+import { api } from "@/utils/api";
+import { feeFormSchema, type feeFormValues } from "@/lib/validators";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Heading } from "@/components/common/heading";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 
 const PaymentResult = () => {
   const toastMessageSuccess = "Tạo phí thành công";
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -20,23 +31,27 @@ const PaymentResult = () => {
   const vehicles = searchParams.get("vehicles");
   const apartmentNo = searchParams.get("apartmentNo");
 
-  const [totalAmount, setTotalAmount] = useState(0);
-
-  const internetLabels = {
-    Internet0: "Không có",
-    Internet1: "Internet1",
-    Internet2: "Internet2",
-    Internet3: "Internet3",
-  };
+  const internetFee = (() => {
+    switch (internet) {
+      case "Internet1":
+        return 330000;
+      case "Internet2":
+        return 875600;
+      case "Internet3":
+        return 1075600;
+      default:
+        return 0;
+    }
+  })();
 
   const calculateElectricityCost = (kWh) => {
     const rates = [
-      {max: 50, rate: 1806},
-      {max: 100, rate: 1866},
-      {max: 200, rate: 2167},
-      {max: 300, rate: 2729},
-      {max: 400, rate: 3050},
-      {max: Infinity, rate: 3151},
+      { max: 50, rate: 1806 },
+      { max: 100, rate: 1866 },
+      { max: 200, rate: 2167 },
+      { max: 300, rate: 2729 },
+      { max: 400, rate: 3050 },
+      { max: Infinity, rate: 3151 },
     ];
 
     let cost = 0;
@@ -44,7 +59,10 @@ const PaymentResult = () => {
 
     for (const tier of rates) {
       if (remainingKWh <= 0) break;
-      const kWhInThisTier = Math.min(remainingKWh, tier.max - (tier.max === Infinity ? 0 : (tier.max - 50)));
+      const kWhInThisTier = Math.min(
+        remainingKWh,
+        tier.max - (tier.max === Infinity ? 0 : tier.max - 50)
+      );
       cost += kWhInThisTier * tier.rate;
       remainingKWh -= kWhInThisTier;
     }
@@ -54,10 +72,10 @@ const PaymentResult = () => {
 
   const calculateWaterCost = (cubicMeters) => {
     const rates = [
-      {max: 10, rate: 5973},
-      {max: 20, rate: 7052},
-      {max: 30, rate: 8669},
-      {max: Infinity, rate: 15929},
+      { max: 10, rate: 5973 },
+      { max: 20, rate: 7052 },
+      { max: 30, rate: 8669 },
+      { max: Infinity, rate: 15929 },
     ];
 
     let cost = 0;
@@ -65,7 +83,10 @@ const PaymentResult = () => {
 
     for (const tier of rates) {
       if (remainingCubicMeters <= 0) break;
-      const cubicMetersInThisTier = Math.min(remainingCubicMeters, tier.max - (tier.max === Infinity ? 0 : (tier.max - 10)));
+      const cubicMetersInThisTier = Math.min(
+        remainingCubicMeters,
+        tier.max - (tier.max === Infinity ? 0 : tier.max - 10)
+      );
       cost += cubicMetersInThisTier * tier.rate;
       remainingCubicMeters -= cubicMetersInThisTier;
     }
@@ -94,28 +115,43 @@ const PaymentResult = () => {
     return cost;
   };
 
-  useEffect(() => {
-    // Calculate total amount based on input values
-    let amount = 0;
+  const vehicleFee = calculateVehicleCost(vehicles);
 
+  const form = useForm<feeFormValues>({
+    resolver: zodResolver(feeFormSchema),
+    defaultValues: {
+      apartmentNo: apartmentNo ? parseInt(apartmentNo) : 0,
+      internetFee: internetFee,
+      electricityFee: electricity ? parseFloat(electricity) : 0,
+      waterFee: water ? parseFloat(water) : 0,
+      contributionFee: contribute
+        ? parseFloat(contribute.replace(/[^0-9]/g, ""))
+        : 0,
+      vehicleFee: vehicleFee,
+      notes: notes || "",
+      totalAmount: 0,
+      dueDate: new Date(),
+      isPaid: false,
+    },
+  });
+
+  const { mutate: createFee } = api.fee.create.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onSuccess: (data) => {
+      toast.success(toastMessageSuccess);
+      router.back();
+    },
+  });
+
+  useEffect(() => {
+    let amount = 0;
     if (houseArea) {
       amount += parseFloat(houseArea) * 15000;
     }
-    if (internet) {
-      switch (internet) {
-        case "Không có":
-          amount += 0;
-          break;
-        case "Internet1":
-          amount += 330000;
-          break;
-        case "Internet2":
-          amount += 875600;
-          break;
-        case "Internet3":
-          amount += 1075600;
-          break;
-      }
+    if (internetFee) {
+      amount += internetFee;
     }
     if (electricity) {
       amount += calculateElectricityCost(parseFloat(electricity));
@@ -126,88 +162,165 @@ const PaymentResult = () => {
     if (contribute) {
       amount += parseFloat(contribute.replace(/[^0-9]/g, ""));
     }
-    if (vehicles) {
-      amount += calculateVehicleCost(vehicles);
+    if (vehicleFee) {
+      amount += vehicleFee;
     }
 
-    setTotalAmount(amount);
-  }, [houseArea, internet, electricity, water, contribute, vehicles]);
+    form.setValue("totalAmount", amount);
+  }, [houseArea, internetFee, electricity, water, contribute, vehicleFee]);
 
-  const handleBack = () => {
-    router.back();
-  };
-
-  const {mutate: createFee} = api.fee.create.useMutation({
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onSuccess: (data) => {
-      toast.success(toastMessageSuccess);
-      handleBack();
-    },
-  });
-
-  const handleSave = (values: feeFormValues) => {
-    setLoading(true);
+  const onSubmit = (values: feeFormValues) => {
     createFee({
-      values: {
-        totalAmount: totalAmount,
-        internetFee: internet,
-        electricityFee: electricity,
-        waterFee: water,
-        contributionFee: contribute,
-        notes: notes || null,
-        apartmentNo: apartmentNo,
-        dueDate: Date,
-        isPaid: false,
-      }
+      ...values,
+      totalAmount: form.getValues("totalAmount"),
     });
-    setLoading(false);
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <p>
-          <strong>Diện tích nhà:</strong> {houseArea} m²
-        </p>
-        <p>
-          <strong>Gói cước internet:</strong> {internetLabels[internet]}
-        </p>
-        <p>
-          <strong>Số điện tiêu thụ:</strong> {electricity} kWh
-        </p>
-        <p>
-          <strong>Số lượng nước tiêu thụ:</strong> {water} khối
-        </p>
-        <p>
-          <strong>Khoản đóng góp:</strong> {contribute} VNĐ
-        </p>
-        <p>
-          <strong>Phí gửi xe:</strong> {vehicles}
-        </p>
-        <p>
-          <strong>Số phòng:</strong> {apartmentNo}
-        </p>
-        <p>
-          <strong>Tổng số tiền:</strong> {totalAmount} VNĐ
-        </p>
-        {notes && (
-          <p>
-            <strong>Ghi chú:</strong> {notes}
-          </p>
-        )}
+    <>
+      <div className="flex items-center justify-between">
+        <Heading
+          title="Kết quả thanh toán"
+          description="Xem và lưu kết quả thanh toán"
+        />
       </div>
-      <div className="space-x-4">
-        <Button className="ml-auto" size="sm" onClick={handleBack}>
-          Quay lại
-        </Button>
-
-        <Button className="ml-auto" size="sm" onClick={handleSave}>
-          Lưu
-        </Button>
-      </div>
-    </div>
+      <Separator />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-8"
+        >
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="apartmentNo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số phòng</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Số phòng" disabled />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="internetFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gói cước internet</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Gói cước internet"
+                      disabled
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="electricityFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số điện tiêu thụ</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Số điện tiêu thụ" disabled />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="waterFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số lượng nước tiêu thụ</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Số lượng nước tiêu thụ"
+                      disabled
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="contributionFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Khoản đóng góp</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Khoản đóng góp" disabled />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="vehicleFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phí gửi xe</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value || vehicleFee}
+                      placeholder="Phí gửi xe"
+                      disabled
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ghi chú</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Ghi chú" disabled />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="totalAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tổng số tiền</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Tổng số tiền" disabled />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-x-4">
+            <Button
+              disabled={form.formState.isSubmitting}
+              className="ml-auto"
+              type="submit"
+            >
+              Lưu
+            </Button>
+            <Button
+              disabled={form.formState.isSubmitting}
+              className="ml-auto"
+              type="button"
+              onClick={() => router.back()}
+            >
+              Quay lại
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 };
 

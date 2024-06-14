@@ -90,17 +90,18 @@ model Apartment {
 }
 
 model Fee {
-  id              String     @id @default(cuid())
+  id              String    @id @default(cuid())
   internetFee     Int
   electricityFee  Int
   waterFee        Int
   contributionFee Int?
+  vehicleFee      Int
   notes           String?
-  totalAmount     Float      @map("amount")
-  dueDate         DateTime   @map("dueDate")
-  isPaid          Boolean    @default(false) @map("isPaid")
+  totalAmount     Float     @map("amount")
+  dueDate         DateTime  @map("dueDate")
+  isPaid          Boolean   @default(false) @map("isPaid")
   apartment       Apartment @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
   apartmentNo     Int
-  createAt        DateTime   @default(now()) @map("create_at")
-  updateAt        DateTime   @default(now()) @updatedAt @map("update_at")
+  createAt        DateTime  @default(now()) @map("create_at")
+  updateAt        DateTime  @default(now()) @updatedAt @map("update_at")
 }

@@ -10,9 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import toast from "react-hot-toast";
-import type {feeFormValues, ILogin} from "@/lib/validators";
-import {useState} from "react";
 
 type VehicleType = Record<"value" | "label", string>;
 
@@ -23,13 +20,18 @@ export function PaymentForm() {
   const [internet, setInternet] = React.useState("Internet1");
   const [electricity, setElectricity] = React.useState("");
   const [water, setWater] = React.useState("");
+  const [contribute, setContribute] = React.useState("");
   const [notes, setNotes] = React.useState("");
-  const [contribute, setContribute] = React.useState("50.000 VNĐ"); // Giá trị mặc định
   const router = useRouter();
   const searchParams = useSearchParams();
   const apartmentNo = Number(searchParams.get("apartmentNo"));
 
-  const { data: vehicles = [], isLoading, isError, error } = api.apartment.getVehiclesByApartment.useQuery({ apartmentNo });
+  const {
+    data: vehicles = [],
+    isLoading,
+    isError,
+    error,
+  } = api.apartment.getVehiclesByApartment.useQuery({ apartmentNo });
 
   React.useEffect(() => {
     if (vehicles.length > 0) {
@@ -80,7 +82,10 @@ export function PaymentForm() {
 
   return (
     <div className="space-y-4">
-      <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="houseArea"
+        className="text-black-700 block text-sm font-medium"
+      >
         Phương tiện căn hộ sở hữu:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -94,12 +99,15 @@ export function PaymentForm() {
             ref={inputRef}
             value=""
             readOnly
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground cursor-not-allowed"
+            className="ml-2 flex-1 cursor-not-allowed bg-transparent outline-none placeholder:text-muted-foreground"
             onMouseDown={(e) => e.preventDefault()}
           />
         </div>
       </div>
-      <label htmlFor="houseArea" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="houseArea"
+        className="text-black-700 block text-sm font-medium"
+      >
         Diện tích nhà (mét vuông):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -112,14 +120,14 @@ export function PaymentForm() {
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
-      <label htmlFor="internet" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="internet"
+        className="text-black-700 block text-sm font-medium"
+      >
         Internet:
       </label>
       <div>
-        <Select
-          onValueChange={setInternet}
-          value={internet}
-        >
+        <Select onValueChange={setInternet} value={internet}>
           <SelectTrigger>
             <SelectValue placeholder="Chọn gói cước internet" />
           </SelectTrigger>
@@ -132,7 +140,10 @@ export function PaymentForm() {
           </SelectContent>
         </Select>
       </div>
-      <label htmlFor="electricity" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="electricity"
+        className="text-black-700 block text-sm font-medium"
+      >
         Số điện:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -145,7 +156,10 @@ export function PaymentForm() {
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
-      <label htmlFor="water" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="water"
+        className="text-black-700 block text-sm font-medium"
+      >
         Nước (khối):
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -158,7 +172,10 @@ export function PaymentForm() {
           className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
-      <label htmlFor="contribute" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="contribute"
+        className="text-black-700 block text-sm font-medium"
+      >
         Khoản đóng góp:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -166,11 +183,15 @@ export function PaymentForm() {
           type="text"
           id="contribute"
           value={contribute}
-          readOnly
-          className="w-full bg-transparent outline-none placeholder:text-muted-foreground cursor-not-allowed"
+          onChange={(e) => setContribute(e.target.value)}
+          placeholder="Nhập số lượng..."
+          className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
         />
       </div>
-      <label htmlFor="notes" className="block text-sm font-medium text-black-700">
+      <label
+        htmlFor="notes"
+        className="text-black-700 block text-sm font-medium"
+      >
         Ghi chú:
       </label>
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
