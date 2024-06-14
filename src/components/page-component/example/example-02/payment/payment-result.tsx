@@ -1,28 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
 import { api } from "@/utils/api";
 import { feeFormSchema, type feeFormValues } from "@/lib/validators";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 const PaymentResult = () => {
   const toastMessageSuccess = "Tạo phí thành công";
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const houseArea = searchParams.get("houseArea");
+  const apartmentSize = searchParams.get("apartmentSize");
   const internet = searchParams.get("internet");
   const electricity = searchParams.get("electricity");
   const water = searchParams.get("water");
@@ -30,9 +24,17 @@ const PaymentResult = () => {
   const notes = searchParams.get("notes");
   const vehicles = searchParams.get("vehicles");
   const apartmentNo = searchParams.get("apartmentNo");
+  const dueDate = searchParams.get("dueDate");
+
+  // Ensure the dueDate is in the correct format for the input
+  const parsedDueDate = dueDate ? new Date(dueDate).toISOString().split("T")[0] : new Date();
+
+  console.log('Due Date:', parsedDueDate); // Debugging line to check if dueDate is being formatted correctly
 
   const internetFee = (() => {
     switch (internet) {
+      case "Không sử dụng":
+        return 0;
       case "Internet1":
         return 330000;
       case "Internet2":
@@ -44,7 +46,11 @@ const PaymentResult = () => {
     }
   })();
 
-  const calculateElectricityCost = (kWh) => {
+  const apartmentSizeFee = (() => {
+    return apartmentSize ? parseFloat(apartmentSize) * 15000 : 0;
+  })();
+
+  const calculateElectricityCost = (kWh: number): number => {
     const rates = [
       { max: 50, rate: 1806 },
       { max: 100, rate: 1866 },
@@ -59,10 +65,7 @@ const PaymentResult = () => {
 
     for (const tier of rates) {
       if (remainingKWh <= 0) break;
-      const kWhInThisTier = Math.min(
-        remainingKWh,
-        tier.max - (tier.max === Infinity ? 0 : tier.max - 50)
-      );
+      const kWhInThisTier = Math.min(remainingKWh, tier.max - (tier.max === Infinity ? 0 : tier.max - 50));
       cost += kWhInThisTier * tier.rate;
       remainingKWh -= kWhInThisTier;
     }
@@ -70,7 +73,7 @@ const PaymentResult = () => {
     return cost;
   };
 
-  const calculateWaterCost = (cubicMeters) => {
+  const calculateWaterCost = (cubicMeters: number): number => {
     const rates = [
       { max: 10, rate: 5973 },
       { max: 20, rate: 7052 },
@@ -83,10 +86,7 @@ const PaymentResult = () => {
 
     for (const tier of rates) {
       if (remainingCubicMeters <= 0) break;
-      const cubicMetersInThisTier = Math.min(
-        remainingCubicMeters,
-        tier.max - (tier.max === Infinity ? 0 : tier.max - 10)
-      );
+      const cubicMetersInThisTier = Math.min(remainingCubicMeters, tier.max - (tier.max === Infinity ? 0 : tier.max - 10));
       cost += cubicMetersInThisTier * tier.rate;
       remainingCubicMeters -= cubicMetersInThisTier;
     }
@@ -94,8 +94,8 @@ const PaymentResult = () => {
     return cost;
   };
 
-  const calculateVehicleCost = (vehicles) => {
-    const vehicleArray = vehicles.split(",");
+  const vehicleFee = (() => {
+    const vehicleArray = vehicles?.split(",") || [];
     let cost = 0;
     vehicleArray.forEach((vehicle) => {
       switch (vehicle) {
@@ -113,24 +113,24 @@ const PaymentResult = () => {
       }
     });
     return cost;
-  };
+  })();
 
-  const vehicleFee = calculateVehicleCost(vehicles);
 
   const form = useForm<feeFormValues>({
     resolver: zodResolver(feeFormSchema),
     defaultValues: {
       apartmentNo: apartmentNo ? parseInt(apartmentNo) : 0,
+      apartmentSizeFee: apartmentSizeFee,
       internetFee: internetFee,
       electricityFee: electricity ? parseFloat(electricity) : 0,
       waterFee: water ? parseFloat(water) : 0,
-      contributionFee: contribute
-        ? parseFloat(contribute.replace(/[^0-9]/g, ""))
-        : 0,
+      contributionFee: contribute ? parseFloat(contribute.replace(/[^0-9]/g, "")) : 0,
       vehicleFee: vehicleFee,
       notes: notes || "",
       totalAmount: 0,
-      dueDate: new Date(),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      dueDate: parsedDueDate,
       isPaid: false,
     },
   });
@@ -139,7 +139,7 @@ const PaymentResult = () => {
     onError: (err) => {
       toast.error(err.message);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(toastMessageSuccess);
       router.back();
     },
@@ -147,8 +147,8 @@ const PaymentResult = () => {
 
   useEffect(() => {
     let amount = 0;
-    if (houseArea) {
-      amount += parseFloat(houseArea) * 15000;
+    if (apartmentSizeFee) {
+      amount += apartmentSizeFee;
     }
     if (internetFee) {
       amount += internetFee;
@@ -160,14 +160,14 @@ const PaymentResult = () => {
       amount += calculateWaterCost(parseFloat(water));
     }
     if (contribute) {
-      amount += parseFloat(contribute.replace(/[^0-9]/g, ""));
+      amount += parseFloat(contribute);
     }
     if (vehicleFee) {
       amount += vehicleFee;
     }
 
     form.setValue("totalAmount", amount);
-  }, [houseArea, internetFee, electricity, water, contribute, vehicleFee]);
+  }, [apartmentNo, apartmentSizeFee, internetFee, electricity, water, contribute, vehicleFee, form]);
 
   const onSubmit = (values: feeFormValues) => {
     createFee({
@@ -177,28 +177,27 @@ const PaymentResult = () => {
   };
 
   return (
-    <>
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Heading
-          title="Kết quả thanh toán"
-          description="Xem và lưu kết quả thanh toán"
-        />
+        <Heading title="Kết quả thanh toán" description="Xem và lưu kết quả thanh toán" />
+        <h2 className="font-bold text-2xl tracking-tight">Phòng số {apartmentNo}</h2>
       </div>
       <Separator />
       <Form {...form}>
         <form
+          /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-8"
         >
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="apartmentNo"
+              name="apartmentSizeFee"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số phòng</FormLabel>
+                  <FormLabel>Phí diện tích nhà</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Số phòng" disabled />
+                    <Input {...field} placeholder="Phí diện tích nhà" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -210,11 +209,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Gói cước internet</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Gói cước internet"
-                      disabled
-                    />
+                    <Input {...field} placeholder="Gói cước internet" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -238,11 +233,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Số lượng nước tiêu thụ</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Số lượng nước tiêu thụ"
-                      disabled
-                    />
+                    <Input {...field} placeholder="Số lượng nước tiêu thụ" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -266,12 +257,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Phí gửi xe</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      value={field.value || vehicleFee}
-                      placeholder="Phí gửi xe"
-                      disabled
-                    />
+                    <Input {...field} value={field.value || vehicleFee} placeholder="Phí gửi xe" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -300,15 +286,22 @@ const PaymentResult = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ngày hết hạn</FormLabel>
+                  <FormControl>
+                    {/*eslint-disable-next-line @typescript-eslint/ban-ts-comment*/}
+                    {/*@ts-ignore*/}
+                    <Input {...field} type="date" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
           <div className="space-x-4">
-            <Button
-              disabled={form.formState.isSubmitting}
-              className="ml-auto"
-              type="submit"
-            >
-              Lưu
-            </Button>
             <Button
               disabled={form.formState.isSubmitting}
               className="ml-auto"
@@ -317,10 +310,17 @@ const PaymentResult = () => {
             >
               Quay lại
             </Button>
+            <Button
+              disabled={form.formState.isSubmitting}
+              className="ml-auto"
+              type="submit"
+            >
+              Lưu
+            </Button>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
 

@@ -43,6 +43,7 @@ export const updateApartmentFormSchema = apartmentFormSchema.extend({
 
 export const feeFormSchema = z.object({
   apartmentNo: z.number(),
+  apartmentSizeFee: z.number().nonnegative(),
   internetFee: z.number().nonnegative(),
   electricityFee: z.number().nonnegative(),
   waterFee: z.number().nonnegative(),
@@ -50,7 +51,7 @@ export const feeFormSchema = z.object({
   vehicleFee: z.number().nonnegative().optional(),
   notes: z.string().optional(),
   totalAmount: z.number().nonnegative(),
-  dueDate: z.date(),
+  dueDate: z.coerce.date(),
   isPaid: z.boolean(),
 });
 
