@@ -92,6 +92,8 @@
 
 // server/api/routers/residentRouter.ts
 
+// server/api/routers/residentRouter.ts
+
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import {
@@ -167,19 +169,33 @@ export const residentRouter = createTRPCRouter({
     });
   }),
 
-  getApartmentsWithResidents: publicProcedure.query(async ({ ctx }) => {
+  getCount: publicProcedure.query(async ({ ctx }) => {
+    const count = await ctx.prisma.resident.count();
+    return count;
+  }),
+
+  getOccupiedApartments: publicProcedure.query(async ({ ctx }) => {
     const apartments = await ctx.prisma.apartment.findMany({
       where: {
         residents: {
           some: {},
         },
       },
-      select: {
-        apartmentNo: true,
+      include: {
+        residents: true,
       },
     });
 
-    return apartments;
+    return {
+      count: apartments.length,
+      apartmentList: apartments.map((apartment) => ({
+        apartmentNo: apartment.apartmentNo,
+        residents: apartment.residents.map((resident) => ({
+          id: resident.id,
+          name: resident.name,
+        })),
+      })),
+    };
   }),
 
   getVehiclesByApartment: publicProcedure
@@ -223,10 +239,9 @@ export const residentRouter = createTRPCRouter({
       return fee;
     }),
     
-    getAllFees: publicProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.fee.findMany();
-    }),
+  getAllFees: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.fee.findMany();
+  }),
 });
 
 export default residentRouter;
-
