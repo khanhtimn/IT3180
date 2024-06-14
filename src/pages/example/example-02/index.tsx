@@ -10,12 +10,16 @@ const ApartmentSelectorPage = () => {
       <div className="flex-1 space-y-4 p-4 md:p-8">
         <div className="flex items-center justify-between">
           <Heading
-            title="Chọn Phòng Chung Cư"
+            title="Quản lý khoản thu"
             description=""
           />
         </div>
-        <Separator />
-        <ApartmentSelector />
+        <Separator/>
+        <div className="flex items-center justify-between">
+          <h2 className="font-bold tracking-tight">Tạo khoản thu mới cho căn hộ</h2>
+        </div>
+        <ApartmentSelector/>
+        <Separator/>
 
       </div>
     </div>

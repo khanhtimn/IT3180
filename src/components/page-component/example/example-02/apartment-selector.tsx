@@ -14,6 +14,8 @@ export function ApartmentSelector() {
 
   const handleConfirm = () => {
     if (selected) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       router.push({
         pathname: "/example/example-02/payment/create",
         query: { apartmentNo: selected },
@@ -29,10 +31,12 @@ export function ApartmentSelector() {
     <div>
       <Select
         onValueChange={setSelected}
+        /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+        // @ts-ignore
         value={selected}
       >
         <SelectTrigger>
-          <SelectValue>{selected ? `Phòng ${selected}` : "Chọn phòng chung cư"}</SelectValue>
+          <SelectValue>{selected ? `Phòng ${selected}` : "Chọn chung cư"}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {apartments.map((apartment) => (

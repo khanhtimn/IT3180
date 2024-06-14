@@ -295,7 +295,7 @@ const PaymentResult = () => {
                   <FormControl>
                     {/*eslint-disable-next-line @typescript-eslint/ban-ts-comment*/}
                     {/*@ts-ignore*/}
-                    <Input {...field} type="date" />
+                    <Input {...field} type="date" disabled/>
                   </FormControl>
                 </FormItem>
               )}
