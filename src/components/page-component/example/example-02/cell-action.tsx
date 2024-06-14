@@ -13,10 +13,10 @@ import {
 
 import { Pencil, Trash2 } from "lucide-react";
 import { AlertModal } from "@/components/common/alert-modal";
-import {type FeeColumns} from "@/lib/validators";
+import {type FeeColumn} from "@/lib/validators";
 
 interface CellActionProps {
-  data: FeeColumns;
+  data: FeeColumn;
 }
 
 export function CellAction({ data }: CellActionProps) {
@@ -55,7 +55,7 @@ export function CellAction({ data }: CellActionProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Cập nhật cuoc phi</p>
+            <p>Cập nhật cước phí</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

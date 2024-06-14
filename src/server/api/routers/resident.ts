@@ -1,10 +1,7 @@
-import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import {
-  residentFormSchema,
-  updateResidentFormSchema,
-} from "@/lib/validators";
-import { format } from "date-fns";
+import {z} from "zod";
+import {createTRPCRouter, publicProcedure} from "@/server/api/trpc";
+import {residentFormSchema, updateResidentFormSchema,} from "@/lib/validators";
+import {format} from "date-fns";
 
 
 export const residentRouter = createTRPCRouter({
@@ -41,7 +38,7 @@ export const residentRouter = createTRPCRouter({
       });
 
       if (!apartmentExists) {
-        throw new Error("Số nhà không tồn tại");
+        throw new Error("Chung cư này không tồn tại");
       }
 
       return ctx.prisma.resident.create({
@@ -57,7 +54,7 @@ export const residentRouter = createTRPCRouter({
       });
 
       if (!apartmentExists) {
-        throw new Error("Số nhà không tồn tại");
+        throw new Error("Chung cư này không tồn tại");
       }
 
       return ctx.prisma.resident.update({
@@ -74,8 +71,7 @@ export const residentRouter = createTRPCRouter({
 
 
   getCount: publicProcedure.query(async ({ ctx }) => {
-    const count = await ctx.prisma.resident.count();
-    return count;
+    return ctx.prisma.resident.count();
   }),
 
   getOccupiedApartments: publicProcedure.query(async ({ ctx }) => {
@@ -100,10 +96,6 @@ export const residentRouter = createTRPCRouter({
         })),
       })),
     };
-  }),
-    
-  getAllFees: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.fee.findMany();
   }),
 });
 

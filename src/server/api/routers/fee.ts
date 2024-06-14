@@ -32,8 +32,6 @@ export const feeRouter = createTRPCRouter({
       totalAmount: item.totalAmount,
       dueDate: format(item.dueDate, "dd/MM/yyyy"),
       isPaid: item.isPaid,
-      createAt: format(item.createAt, "dd/MM/yyyy"),
-      updateAt: format(item.updateAt, "dd/MM/yyyy"),
     }));
   }),
 
@@ -44,30 +42,26 @@ export const feeRouter = createTRPCRouter({
   }),
 
   create: publicProcedure.input(feeFormSchema).mutation(async ({ ctx, input }) => {
-    // Ensure the apartmentNo exists in the Apartment table
     const apartmentExists = await ctx.prisma.apartment.findUnique({
       where: { apartmentNo: input.apartmentNo },
     });
 
     if (!apartmentExists) {
-      throw new Error("Apartment number does not exist");
+      throw new Error("Chung cư này không tồn tại");
     }
 
     return ctx.prisma.fee.create({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       data: { ...input },
     });
   }),
 
   update: publicProcedure.input(updateFeeFormSchema).mutation(async ({ ctx, input }) => {
-    // Ensure the apartmentNo exists in the Apartment table
     const apartmentExists = await ctx.prisma.apartment.findUnique({
       where: { apartmentNo: input.apartmentNo },
     });
 
     if (!apartmentExists) {
-      throw new Error("Apartment number does not exist");
+      throw new Error("Chung cư này không tồn tại");
     }
 
     return ctx.prisma.fee.update({
