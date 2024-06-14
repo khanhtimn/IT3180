@@ -64,6 +64,8 @@ export const authOptions: NextAuthOptions = {
 
           if (!result) return null;
 
+          if (!result.password) return null;
+
           const isValidPassword = await verify(result.password, password);
 
           if (!isValidPassword) return null;
