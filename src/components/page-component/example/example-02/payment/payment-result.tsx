@@ -1,5 +1,5 @@
 import { api } from "@/utils/api";
-import { feeFormSchema, type feeFormValues } from "@/lib/validators";
+import {feeFormSchema, type FeeFormValues} from "@/lib/validators";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Heading } from "@/components/common/heading";
 import { Separator } from "@/components/ui/separator";
@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -25,11 +24,6 @@ const PaymentResult = () => {
   const vehicles = searchParams.get("vehicles");
   const apartmentNo = searchParams.get("apartmentNo");
   const dueDate = searchParams.get("dueDate");
-
-  // Ensure the dueDate is in the correct format for the input
-  const parsedDueDate = dueDate ? new Date(dueDate).toISOString().split("T")[0] : new Date();
-
-  console.log('Due Date:', parsedDueDate); // Debugging line to check if dueDate is being formatted correctly
 
   const internetFee = (() => {
     switch (internet) {
@@ -115,38 +109,9 @@ const PaymentResult = () => {
     return cost;
   })();
 
-
-  const form = useForm<feeFormValues>({
-    resolver: zodResolver(feeFormSchema),
-    defaultValues: {
-      apartmentNo: apartmentNo ? parseInt(apartmentNo) : 0,
-      apartmentSizeFee: apartmentSizeFee,
-      internetFee: internetFee,
-      electricityFee: electricity ? parseFloat(electricity) : 0,
-      waterFee: water ? parseFloat(water) : 0,
-      contributionFee: contribute ? parseFloat(contribute.replace(/[^0-9]/g, "")) : 0,
-      vehicleFee: vehicleFee,
-      notes: notes || "",
-      totalAmount: 0,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dueDate: parsedDueDate,
-      isPaid: false,
-    },
-  });
-
-  const { mutate: createFee } = api.fee.create.useMutation({
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onSuccess: () => {
-      toast.success(toastMessageSuccess);
-      router.back();
-    },
-  });
-
-  useEffect(() => {
+  const totalAmount = (() => {
     let amount = 0;
+
     if (apartmentSizeFee) {
       amount += apartmentSizeFee;
     }
@@ -166,13 +131,42 @@ const PaymentResult = () => {
       amount += vehicleFee;
     }
 
-    form.setValue("totalAmount", amount);
-  }, [apartmentNo, apartmentSizeFee, internetFee, electricity, water, contribute, vehicleFee, form]);
+    return amount;
+  })();
 
-  const onSubmit = (values: feeFormValues) => {
+
+  const form = useForm<FeeFormValues>({
+    resolver: zodResolver(feeFormSchema),
+    defaultValues: {
+      apartmentNo: apartmentNo ? parseInt(apartmentNo) : 0,
+      apartmentSizeFee: apartmentSizeFee,
+      internetFee: internetFee,
+      electricityFee: electricity ? parseFloat(electricity) : 0,
+      waterFee: water ? parseFloat(water) : 0,
+      contributionFee: contribute ? parseFloat(contribute) : 0,
+      vehicleFee: vehicleFee,
+      notes: notes || "",
+      totalAmount: totalAmount,
+      dueDate: dueDate ? new Date(dueDate) : new Date(),
+      isPaid: false,
+    },
+  });
+
+  const { mutate: createFee } = api.fee.create.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onSuccess: () => {
+      toast.success(toastMessageSuccess);
+      router.push("/example/example-02");
+    },
+  });
+
+
+
+  const onSubmit = (values: FeeFormValues) => {
     createFee({
       ...values,
-      totalAmount: form.getValues("totalAmount"),
     });
   };
 
@@ -185,8 +179,9 @@ const PaymentResult = () => {
       <Separator />
       <Form {...form}>
         <form
-          /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={(e) => {
+            void form.handleSubmit(onSubmit)(e);
+          }}
           className="w-full space-y-8"
         >
           <div className="space-y-4">
@@ -245,7 +240,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Khoản đóng góp</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Khoản đóng góp" disabled />
+                    <Input {...field} value={contribute ? parseFloat(contribute) : 0} placeholder="Khoản đóng góp" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -257,7 +252,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Phí gửi xe</FormLabel>
                   <FormControl>
-                    <Input {...field} value={field.value || vehicleFee} placeholder="Phí gửi xe" disabled />
+                    <Input {...field} value={vehicleFee} placeholder="Phí gửi xe" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -269,7 +264,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Ghi chú</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Ghi chú" disabled />
+                    <Input {...field} value={notes ? notes : ""} placeholder="Ghi chú" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -281,7 +276,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Tổng số tiền</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Tổng số tiền" disabled />
+                    <Input {...field} value={totalAmount} placeholder="Tổng số tiền" disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -293,9 +288,7 @@ const PaymentResult = () => {
                 <FormItem>
                   <FormLabel>Ngày hết hạn</FormLabel>
                   <FormControl>
-                    {/*eslint-disable-next-line @typescript-eslint/ban-ts-comment*/}
-                    {/*@ts-ignore*/}
-                    <Input {...field} type="date" disabled/>
+                    <Input {...field} value={dueDate ? new Date(dueDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0]} type="date" disabled/>
                   </FormControl>
                 </FormItem>
               )}

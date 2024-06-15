@@ -13,10 +13,10 @@ import {
 
 import { Pencil, Trash2 } from "lucide-react";
 import { AlertModal } from "@/components/common/alert-modal";
-import {type FeeColumns} from "@/lib/validators";
+import {type FeeColumn} from "@/lib/validators";
 
 interface CellActionProps {
-  data: FeeColumns;
+  data: FeeColumn;
 }
 
 export function CellAction({ data }: CellActionProps) {
@@ -48,14 +48,14 @@ export function CellAction({ data }: CellActionProps) {
               size="icon"
               className="hover:bg-secondary"
               onClick={() => {
-                router.push(`/example/example-02/payment/${data.id}`);
+                router.push(`/example/example-02/${data.id}`);
               }}
             >
               <Pencil className="h-4 w-4 text-foreground" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Cập nhật cuoc phi</p>
+            <p>Cập nhật cước phí</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

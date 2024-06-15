@@ -73,7 +73,6 @@ const Login = ({initialData}: ILoginProps) => {
     try {
       await signIn(provider, {callbackUrl: "/dashboard"});
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       toast.error(`Đăng nhập với ${provider} thất bại, vui lòng thử lại`);
     } finally {
       setLoading(false);

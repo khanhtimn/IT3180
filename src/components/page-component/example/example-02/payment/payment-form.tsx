@@ -69,22 +69,19 @@ export function PaymentForm() {
   ];
 
   const onSubmit = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    router.push({
-      pathname: "/example/example-02/payment/result",
-      query: {
-        apartmentSize,
-        internet,
-        electricity,
-        water,
-        contribute,
-        notes,
-        vehicles: selected.map((v) => v.value).join(","),
-        apartmentNo,
-        dueDate,
-      },
-    });
+    const query = new URLSearchParams({
+      apartmentSize: apartmentSize.toString(),
+      internet: internet.toString(),
+      electricity: electricity.toString(),
+      water: water.toString(),
+      contribute: contribute?.toString() || "",
+      notes: notes || "",
+      vehicles: selected.map((v) => v.value).join(","),
+      apartmentNo: apartmentNo.toString(),
+      dueDate: dueDate,
+    }).toString();
+
+    router.push(`/example/example-02/payment/result?${query}`);
   };
 
   const handleBack = () => {

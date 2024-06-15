@@ -47,15 +47,15 @@ export const feeFormSchema = z.object({
   internetFee: z.number().nonnegative(),
   electricityFee: z.number().nonnegative(),
   waterFee: z.number().nonnegative(),
-  contributionFee: z.number().nonnegative().optional(),
-  vehicleFee: z.number().nonnegative().optional(),
-  notes: z.string().optional(),
+  contributionFee: z.number().nonnegative().nullable(),
+  vehicleFee: z.number().nonnegative(),
+  notes: z.string().nullable(),
   totalAmount: z.number().nonnegative(),
   dueDate: z.coerce.date(),
   isPaid: z.boolean(),
 });
 
-export type feeFormValues = z.infer<typeof feeFormSchema>;
+export type FeeFormValues = z.infer<typeof feeFormSchema>;
 
 export const updateFeeFormSchema = feeFormSchema.extend({
   id: z.string(),
@@ -68,17 +68,15 @@ export const feeColumn = z.object({
   internetFee: z.number(),
   electricityFee: z.number(),
   waterFee: z.number(),
-  contributionFee: z.number(),
+  contributionFee: z.number().nullable(),
   vehicleFee: z.number(),
-  notes: z.string(),
+  notes: z.string().nullable(),
   totalAmount: z.number(),
-  dueDate: z.date(),
+  dueDate: z.string(),
   isPaid: z.boolean(),
-  createAt: z.date(),
-  updateAt: z.date(),
 });
 
-export type FeeColumns = z.infer<typeof feeColumn>;
+export type FeeColumn = z.infer<typeof feeColumn>;
 
 export const loginSchema = z.object({
   email: z.string().email(),

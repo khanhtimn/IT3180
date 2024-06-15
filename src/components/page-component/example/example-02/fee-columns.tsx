@@ -2,10 +2,10 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
-import {type FeeColumns} from "@/lib/validators";
+import {type FeeColumn} from "@/lib/validators";
 import {CellAction} from "@/components/page-component/example/example-02/cell-action";
 
-export const columns: ColumnDef<FeeColumns>[] = [
+export const columns: ColumnDef<FeeColumn>[] = [
   {
     id: "select",
     header: ({table}) => (
@@ -31,56 +31,45 @@ export const columns: ColumnDef<FeeColumns>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: "Nhan danh phi",
-  },
-  {
     accessorKey: "apartmentNo",
-    header: "Chung cu so",
-  },
-  {
-    accessorKey: "totalAmount",
-    header: "Tong phi thu",
+    header: "Chung cư số",
   },
   {
     accessorKey: "apartmentSizeFee",
-    header: "Phi nha o",
+    header: "Phí nhà đất",
   },
-  {
-    accessorKey: "internetFee",
-    header: "Phi Internet",
-  },
+
   {
     accessorKey: "electricityFee",
-    header: "Phi dien",
+    header: "Phí điện",
   },
   {
     accessorKey: "waterFee",
-    header: "Phi nuoc",
+    header: "Phí nước",
+  },
+  {
+    accessorKey: "internetFee",
+    header: "Phí Internet",
   },
   {
     accessorKey: "vehicleFee",
-    header: "Phi gui xe",
+    header: "Phí gửi xe",
+  },
+  {
+    accessorKey: "totalAmount",
+    header: "Tổng phí thu",
   },
   {
     accessorKey: "dueDate",
-    header: "Han thanh toan",
+    header: "Hạn thanh toán",
   },
   {
     accessorKey: "isPaid",
-    header: "Da thanh toan?",
+    header: "Đã thanh toán",
   },
   {
     accessorKey: "notes",
-    header: "Ghi chu:",
-  },
-  {
-    accessorKey: "createAt",
-    header: "Thời gian tạo",
-  },
-  {
-    accessorKey: "updateAt",
-    header: "Thời gian cập nhật",
+    header: "Ghi chú",
   },
   {
     id: "actions",
