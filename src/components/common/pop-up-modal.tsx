@@ -1,5 +1,3 @@
-// components/common/pop-up-modal.tsx
-
 import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
@@ -61,7 +59,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
                 </div>
 
                 <div className="mt-4">
-                  <Button onClick={onClose}>Close</Button>
+                  <Button onClick={onClose}>Đóng</Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

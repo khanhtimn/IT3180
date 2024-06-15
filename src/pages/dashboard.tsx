@@ -4,7 +4,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
   Card,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +74,7 @@ const Dashboard = () => {
               <CardContent>
                 <div className="space-y-2">
                 {isLoadingApartments ? (
-                  <div className="text-2xl font-bold">Loading...</div>
+                  <div className="text-2xl font-bold">Đang tải...</div>
                 ) : isErrorApartments ? (
                   <div className="text-2xl font-bold">Error: {errorApartments.message}</div>
                 ) : (

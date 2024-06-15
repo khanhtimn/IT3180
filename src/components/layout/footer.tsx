@@ -17,10 +17,6 @@ export default function Footer() {
             x="0"
             y="0"
           >
-            <polygon
-              className="text-blueGray-200 fill-current"
-              points="2560 0 2560 100 0 100"
-            ></polygon>
           </svg>
         </div>
         <div className="container mx-auto px-4">
@@ -28,12 +24,12 @@ export default function Footer() {
           <div className="flex flex-wrap items-center md:justify-between justify-center">
             <div className="w-full md:w-4/12 px-4 mx-auto text-center">
               <div className="text-sm text-blueGray-500 font-semibold py-1">
-                Copyright © {new Date().getFullYear()} Notus NextJS by{" "}
+                Copyright © 2024 - {" "}
                 <a
                   href="https://github.com/khanhtimn/it3180/"
                   className="text-blueGray-500 hover:text-blueGray-800"
                 >
-                  Creative Tim
+                  Nhóm 3
                 </a>
                 .
               </div>
