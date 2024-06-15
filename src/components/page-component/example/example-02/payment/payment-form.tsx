@@ -68,23 +68,6 @@ export function PaymentForm() {
     { value: "Internet3", label: "Internet3" },
   ];
 
-  // const onSubmit = () => {
-  //   router.push({
-  //     pathname: "/example/example-02/payment/result",
-  //     query: {
-  //       apartmentSize,
-  //       internet,
-  //       electricity,
-  //       water,
-  //       contribute,
-  //       notes,
-  //       vehicles: selected.map((v) => v.value).join(","),
-  //       apartmentNo,
-  //       dueDate,
-  //     },
-  //   });
-  // };
-
   const onSubmit = () => {
     const query = new URLSearchParams({
       apartmentSize: apartmentSize.toString(),

@@ -8,7 +8,7 @@ import {Separator} from "@/components/ui/separator";
 import {DataTable} from "@/components/ui/data-table/data-table";
 import {type FeeColumn} from "@/lib/validators";
 import {columns} from "@/components/page-component/example/example-02/fee-columns";
-import {SelectWithConfirm} from "@/components/ui/select-confirm";
+import {SelectWithConfirm} from "@/components/ui/select-with-confirm";
 
 interface FeeClientProps {
   data: FeeColumn[];
