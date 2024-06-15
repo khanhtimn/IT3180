@@ -5,6 +5,8 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {useEffect, useRef, useState} from "react";
+import {SelectViewport} from "@radix-ui/react-select";
 
 const Select = SelectPrimitive.Root;
 const SelectGroup = SelectPrimitive.Group;
@@ -146,29 +148,68 @@ interface SelectWithConfirmProps {
 }
 
 const SelectWithConfirm: React.FC<SelectWithConfirmProps> = ({ options, onConfirm, selected, setSelected }) => {
-  const [keepOpen, setKeepOpen] = React.useState(false);
+  // const [keepOpen, setKeepOpen] = React.useState(false);
+  //
+  // const handleChange = (value: string | null) => {
+  //   setSelected(value);
+  //   setKeepOpen(true); // Keep the dropdown open after selection
+  // };
+  //
 
-  const handleChange = (value: string | null) => {
-    setSelected(value);
-    setKeepOpen(true); // Keep the dropdown open after selection
+  //
+  // const handleClose = () => {
+  //   setKeepOpen(false); // Close the dropdown when the button is clicked
+  // };
+  //
+
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev); // Toggle the dropdown open state
   };
 
   const handleOpen = () => {
-    setKeepOpen(true);
+    setIsOpen(true);
   };
 
   const handleClose = () => {
-    setKeepOpen(false); // Close the dropdown when the button is clicked
+    onConfirm();
+    setIsOpen(false);
   };
 
-  const toggleDropdown = () => {
-    setKeepOpen((prev) => !prev); // Toggle the dropdown open state
+  const handleChange = (value: string) => {
+    setSelected(value);
+    setIsOpen(true); // Keep the dropdown open after selection
   };
+
+
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
-    <Select open={keepOpen} onOpenChange={handleOpen} onValueChange={handleChange} value={selected ?? undefined}>
+    <Select open={isOpen} onOpenChange={handleOpen} onValueChange={handleChange} value={selected ?? undefined}>
       <SelectTrigger onClick={toggleDropdown}>
-        <SelectValue>{selected ? options.find(opt => opt.value === selected)?.label : "Chọn chung cư"}</SelectValue>
+        <SelectValue placeholder="Chọn chung cư...">
+          {selected ? options.find(opt => opt.value === selected)?.label : ""}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {options.map(option => (
@@ -186,6 +227,7 @@ const SelectWithConfirm: React.FC<SelectWithConfirmProps> = ({ options, onConfir
     </Select>
   );
 };
+
 
 export {
   Select,
