@@ -175,7 +175,7 @@ const Home = () => {
                 initial={{opacity: 0, x: 50}}
                 animate={{opacity: 1, x: 0}}
                 transition={{duration: 1}}
-                className="w-full md:w-5/12 ml-auto mr-auto px-4"
+                className="w-full md:w-5/12 ml-auto mr-auto px-4 mt-4"
               >
                 <div className="md:pr-12">
                   <h3 className="text-3xl font-semibold">
@@ -193,6 +193,84 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+
+        <section className="relative block py-24 lg:pt-0">
+          <div
+            className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-20"
+            style={{transform: "translateZ(0)"}}
+          >
+          </div>
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap justify-center lg:-mt-64">
+              <div className="w-full lg:w-6/12 px-4">
+                <div
+                  className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg">
+                  <div className="flex-auto p-5 lg:p-10">
+                    <h4 className="text-2xl font-semibold">
+                      Để lại lời nhắn cho chúng tôi
+                    </h4>
+                    <p className="leading-relaxed mt-1 mb-4">
+                      Hãy điền vào mục dưới đây và chúng tôi sẽ liên hệ lại với bạn trong vòng 24 giờ.
+                    </p>
+                    <div className="relative w-full mb-3 mt-8">
+                      <label
+                        className="block uppercase text-xs font-bold mb-2"
+                        htmlFor="full-name"
+                      >
+                        Họ và tên
+                      </label>
+                      <input
+                        type="text"
+                        className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder="Họ và tên"
+                      />
+                    </div>
+
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-xs font-bold mb-2"
+                        htmlFor="email"
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder="Email"
+                      />
+                    </div>
+
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-xs font-bold mb-2"
+                        htmlFor="message"
+                      >
+                        Lời nhắn
+                      </label>
+                      <textarea
+                        // rows="4"
+                        // cols="80"
+                        className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                        placeholder="Để lại lời nhắn..."
+                      />
+                    </div>
+                    <div className="text-center mt-6">
+                      <button
+                        className="text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        type="button"
+                      >
+                        Gửi
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
       </main>
       <Footer/>
     </>
