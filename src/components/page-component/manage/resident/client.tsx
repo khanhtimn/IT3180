@@ -24,7 +24,7 @@ export const ResidentClient = ({ data }: ResidentClientProps) => {
         />
         <Button
           onClick={() => {
-            router.push("/example/residents/new");
+            router.push("/manage/residents/new");
           }}
         >
           <Plus className="mr-2 h-4 w-4" /> Thêm mới

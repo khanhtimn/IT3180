@@ -3,7 +3,8 @@ import { z } from "zod";
 export const residentFormSchema = z.object({
   name: z.string().min(1),
   gender: z.string().min(1),
-  nationalId: z.number().int().nonnegative().min(1),
+  nationalId: z.string().min(12),
+  phoneNumber: z.string().min(10),
   apartmentNo: z.number().int().nonnegative().min(1),
   vehicle: z.string().min(1),
 });
@@ -14,7 +15,8 @@ export const residentColumn = z.object({
   id: z.string(),
   name: z.string(),
   gender: z.string(),
-  nationalId: z.number().int().nonnegative(),
+  nationalId: z.string(),
+  phoneNumber: z.string(),
   apartmentNo: z.number().int().nonnegative(),
   vehicle: z.string(),
   createAt: z.string(),
@@ -27,7 +29,8 @@ export const updateResidentFormSchema = z.object({
   id: z.string(),
   name: z.string(),
   gender: z.string(),
-  nationalId: z.number().int().nonnegative(),
+  phoneNumber: z.string(),
+  nationalId: z.string(),
   apartmentNo: z.number().int().nonnegative(),
   vehicle: z.string(),
 });
@@ -53,6 +56,7 @@ export const feeFormSchema = z.object({
   totalAmount: z.number().nonnegative(),
   dueDate: z.coerce.date(),
   isPaid: z.boolean(),
+  updateAt: z.coerce.date(),
 });
 
 export type FeeFormValues = z.infer<typeof feeFormSchema>;
@@ -64,16 +68,17 @@ export const updateFeeFormSchema = feeFormSchema.extend({
 export const feeColumn = z.object({
   id: z.string(),
   apartmentNo: z.number(),
-  apartmentSizeFee: z.number(),
-  internetFee: z.number(),
-  electricityFee: z.number(),
-  waterFee: z.number(),
-  contributionFee: z.number().nullable(),
-  vehicleFee: z.number(),
+  apartmentSizeFee: z.string(),
+  internetFee: z.string(),
+  electricityFee: z.string(),
+  waterFee: z.string(),
+  contributionFee: z.string().nullable(),
+  vehicleFee: z.string(),
   notes: z.string().nullable(),
-  totalAmount: z.number(),
+  totalAmount: z.string(),
   dueDate: z.string(),
-  isPaid: z.boolean(),
+  isPaid: z.string(),
+  updateAt: z.string(),
 });
 
 export type FeeColumn = z.infer<typeof feeColumn>;

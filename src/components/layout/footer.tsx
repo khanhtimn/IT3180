@@ -1,5 +1,6 @@
 import React from "react";
-import { Twitter, Facebook, Dribbble, Github, Instagram } from "lucide-react";
+import { Github } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -64,7 +65,9 @@ export default function Footer() {
                     className="w-full md:w-6/12 lg:w-3/12 lg:mb-0 px-4"
                   >
                     <div className="px-6">
-                      <img
+                      <Image
+                        width={460}
+                        height={460}
                         alt={person.name}
                         src={person.imgSrc}
                         className="shadow-lg rounded-full mx-auto w-24"

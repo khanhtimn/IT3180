@@ -52,9 +52,10 @@ export const AlertModal = ({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="flex items-center gap-x-2">
-          <span>Tiếp tục xóa</span>
-          <span className="text-lg font-bold text-red-500">{name}</span>?
+        <div className="flex items-center gap-x-1 text-red-500 text-lg font-bold">
+          <span className="text-lg font-bold text-red-500">Xác nhận xoá</span>
+          <span className="text-lg font-bold text-red-500">{name}</span>
+          ?
         </div>
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button disabled={loading} variant="outline" onClick={onClose}>

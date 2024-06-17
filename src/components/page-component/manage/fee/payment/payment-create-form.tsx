@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
-import { api } from "@/utils/api";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
+import {useRouter, useSearchParams} from "next/navigation";
+import {api} from "@/utils/api";
 import {
   Select,
   SelectContent,
@@ -9,13 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useRef, useState } from "react";
-import { Heading } from "@/components/common/heading";
-import { Separator } from "@/components/ui/separator";
+import React, {useEffect, useRef, useState} from "react";
+import {Heading} from "@/components/common/heading";
+import {Separator} from "@/components/ui/separator";
+import {DatePicker} from "@/components/ui/date-picker";
+import {Loading} from "@/components/common/loading";
 
 type VehicleType = Record<"value" | "label", string>;
 
-export function PaymentForm() {
+
+
+export function PaymentCreateForm() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<VehicleType[]>([]);
   const [apartmentSize, setApartmentSize] = useState("");
@@ -34,14 +38,14 @@ export function PaymentForm() {
     isLoading,
     isError,
     error,
-  } = api.apartment.getVehiclesByApartment.useQuery({ apartmentNo });
+  } = api.apartment.getVehiclesByApartment.useQuery({apartmentNo});
 
   const {
     data: size,
     isLoading: isLoadingSize,
     isError: isErrorSize,
     error: errorSize,
-  } = api.apartment.getApartmentSize.useQuery({ apartmentNo });
+  } = api.apartment.getApartmentSize.useQuery({apartmentNo});
 
   useEffect(() => {
     if (vehicles.length > 0) {
@@ -62,10 +66,10 @@ export function PaymentForm() {
   }, [size]);
 
   const internetOptions = [
-    { value: "Không sử dụng", label: "Không sử dụng" },
-    { value: "Internet1", label: "Internet1" },
-    { value: "Internet2", label: "Internet2" },
-    { value: "Internet3", label: "Internet3" },
+    {value: "Không sử dụng", label: "Không sử dụng"},
+    {value: "Internet1", label: "Internet1"},
+    {value: "Internet2", label: "Internet2"},
+    {value: "Internet3", label: "Internet3"},
   ];
 
   const onSubmit = () => {
@@ -81,7 +85,7 @@ export function PaymentForm() {
       dueDate: dueDate,
     }).toString();
 
-    router.push(`/example/example-02/payment/result?${query}`);
+    router.push(`/manage/fee/payment/result?${query}`);
   };
 
   const handleBack = () => {
@@ -89,13 +93,14 @@ export function PaymentForm() {
   };
 
   if (isLoading || isLoadingSize) {
-    return <div>Đang tải...</div>;
+    return <Loading/>;
   }
 
   if (isError || isErrorSize) {
     console.error(error || errorSize);
     return <div>Lỗi!. Vui lòng thử lại.</div>;
   }
+
 
   return (
     <div className="space-y-4">
@@ -106,7 +111,7 @@ export function PaymentForm() {
         />
         <h2 className="font-bold text-2xl tracking-tight">Phòng số {apartmentNo}</h2>
       </div>
-      <Separator />
+      <Separator/>
       <div className="space-y-4">
         <label
           htmlFor="apartmentSize"
@@ -144,19 +149,19 @@ export function PaymentForm() {
             id="apartmentSize"
             value={apartmentSize}
             readOnly
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+            className="w-full cursor-not-allowed bg-transparent outline-none placeholder:text-muted-foreground opacity-60"
           />
         </div>
         <label
           htmlFor="internet"
           className="text-black-700 block text-sm font-medium"
         >
-          Internet:
+          Gói cước Internet:
         </label>
         <div>
           <Select onValueChange={setInternet} value={internet}>
             <SelectTrigger>
-              <SelectValue placeholder="Chọn gói cước internet" />
+              <SelectValue placeholder="Chọn gói cước internet"/>
             </SelectTrigger>
             <SelectContent>
               {internetOptions.map((option) => (
@@ -171,13 +176,14 @@ export function PaymentForm() {
           htmlFor="electricity"
           className="text-black-700 block text-sm font-medium"
         >
-          Số điện:
+          Số điện (kWh):
         </label>
         <div
           className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
           <input
-            type="text"
+            type="number"
             id="electricity"
+            inputMode="numeric"
             value={electricity}
             onChange={(e) => setElectricity(e.target.value)}
             placeholder="Nhập số điện tiêu thụ..."
@@ -188,12 +194,13 @@ export function PaymentForm() {
           htmlFor="water"
           className="text-black-700 block text-sm font-medium"
         >
-          Nước (khối):
+          Số nước (khối):
         </label>
         <div
           className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
           <input
-            type="text"
+            type="number"
+            inputMode="numeric"
             id="water"
             value={water}
             onChange={(e) => setWater(e.target.value)}
@@ -205,13 +212,14 @@ export function PaymentForm() {
           htmlFor="contribute"
           className="text-black-700 block text-sm font-medium"
         >
-          Khoản đóng góp:
+          Khoản đóng góp (vnđ):
         </label>
         <div
           className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
           <input
-            type="text"
+            type="number"
             id="contribute"
+            inputMode="numeric"
             value={contribute}
             onChange={(e) => setContribute(e.target.value)}
             placeholder="Nhập số lượng..."
@@ -238,18 +246,11 @@ export function PaymentForm() {
           htmlFor="dueDate"
           className="text-black-700 block text-sm font-medium"
         >
-          Ngày hết hạn:
+          Hạn thanh toán:
         </label>
-        <div
-          className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-          <input
-            type="date"
-            id="dueDate"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
-          />
-        </div>
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/*@ts-ignore*/}
+        <DatePicker date={dueDate} setDate={setDueDate}/>
         <div className="space-x-4">
           <Button className="ml-auto" size="sm" onClick={handleBack}>
             Quay lại

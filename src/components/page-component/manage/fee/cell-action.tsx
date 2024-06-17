@@ -48,7 +48,7 @@ export function CellAction({ data }: CellActionProps) {
               size="icon"
               className="hover:bg-secondary"
               onClick={() => {
-                router.push(`/example/example-02/${data.id}`);
+                router.push(`/manage/fee/${data.id}`);
               }}
             >
               <Pencil className="h-4 w-4 text-foreground" />
@@ -81,9 +81,9 @@ export function CellAction({ data }: CellActionProps) {
       </TooltipProvider>
 
       <AlertModal
-        title="Xóa thông tin?"
+        title="Xóa khoản phí này?"
         description="Không thể khôi phục."
-        name={data.id}
+        name={"khoản phí: " + data.totalAmount.toString() +  " của chung cư số " + data.apartmentNo.toString()}
 
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}

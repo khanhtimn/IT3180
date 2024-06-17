@@ -3,7 +3,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
 import {type FeeColumn} from "@/lib/validators";
-import {CellAction} from "@/components/page-component/example/example-02/cell-action";
+import {CellAction} from "@/components/page-component/manage/fee/cell-action";
 
 export const columns: ColumnDef<FeeColumn>[] = [
   {
@@ -60,16 +60,24 @@ export const columns: ColumnDef<FeeColumn>[] = [
     header: "Tổng phí thu",
   },
   {
+    accessorKey: "contributionFee",
+    header: "Khoản đóng góp",
+  },
+  {
     accessorKey: "dueDate",
     header: "Hạn thanh toán",
   },
   {
     accessorKey: "isPaid",
-    header: "Đã thanh toán",
+    header: "Trạng thái",
   },
   {
     accessorKey: "notes",
     header: "Ghi chú",
+  },
+  {
+    accessorKey: "updateAt",
+    header: "Cập nhật lần cuối",
   },
   {
     id: "actions",

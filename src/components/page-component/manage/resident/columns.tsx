@@ -35,25 +35,29 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     header: "Họ & Tên",
   },
   {
+    accessorKey: "apartmentNo",
+    header: "Số nhà",
+  },
+  {
     accessorKey: "gender",
     header: "Giới tính",
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: "Số điện thoại",
   },
   {
     accessorKey: "nationalId",
     header: "CCCD/CMND",
   },
-  {
-    accessorKey: "apartmentNo",
-    header: "Số nhà",
-  },
-  {
-    accessorKey: "createAt",
-    header: "Thời gian tạo",
-  },
-  {
-    accessorKey: "updateAt",
-    header: "Thời gian cập nhật",
-  },
+  // {
+  //   accessorKey: "createAt",
+  //   header: "Thời gian tạo",
+  // },
+  // {
+  //   accessorKey: "updateAt",
+  //   header: "Thời gian cập nhật",
+  // },
   {
     id: "actions",
     enableSorting: false,

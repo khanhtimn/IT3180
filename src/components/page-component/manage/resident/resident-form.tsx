@@ -51,6 +51,8 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
       name: "",
       gender: "",
       vehicle: "",
+      nationalId: "",
+      phoneNumber: "",
     },
   });
 
@@ -60,7 +62,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
     },
     onSuccess: (data) => {
       toast.success(toastMessage);
-      router.push(`/example/residents`);
+      router.push(`/manage/residents`);
     },
   });
 
@@ -70,7 +72,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
     },
     onSuccess: (data) => {
       toast.success(toastMessage);
-      router.push(`/example/residents`);
+      router.push(`/manage/residents`);
     },
   });
 
@@ -81,7 +83,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
       },
       onSuccess: (data) => {
         toast.success(toastMessage);
-        router.push(`/example/residents`);
+        router.push(`/manage/residents`);
       },
     });
 
@@ -139,6 +141,56 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
             />
             <FormField
               control={form.control}
+              name="gender"
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Giới tính</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Giới tính"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Nam">Nam</SelectItem>
+                      <SelectItem value="Nữ">Nữ</SelectItem>
+                      <SelectItem value="Khác">Khác</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Số điện thoại</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Số điện thoại"
+                      inputMode="numeric"
+                      value={field.value}
+                      pattern="[0-9]*"
+                      maxLength={10}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="nationalId"
               render={({field}) => (
                 <FormItem>
@@ -148,11 +200,11 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                       {...field}
                       placeholder="CCCD/CMND"
                       inputMode="numeric" // display number keyboard on mobile
-                      value={field.value || ""}
+                      value={field.value}
                       pattern="[0-9]*" // parse to number type for zod validation
-                      onChange={(e) =>
-                        e.target.validity.valid && field.onChange(+e.target.value) // change input field
-                      }
+                      // onChange={(e) =>
+                      //   e.target.validity.valid && field.onChange(+e.target.value) // change input field
+                      // }
                       maxLength={12}
                       disabled={loading}
                     />
@@ -185,38 +237,6 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
             />
             <FormField
               control={form.control}
-              name="gender"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Giới tính</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Giới tính"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Nam">Nam</SelectItem>
-                      <SelectItem value="Nữ">Nữ</SelectItem>
-                      <SelectItem value="Khác">Khác</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-
-
-            <FormField
-              control={form.control}
               name="vehicle"
               render={({field}) => (
                 <FormItem>
@@ -246,9 +266,6 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                 </FormItem>
               )}
             />
-
-
-
           </div>
           <div className="space-x-4">
             <Button disabled={loading} className="ml-auto" type="submit">

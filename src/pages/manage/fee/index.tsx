@@ -1,5 +1,5 @@
 import React from "react";
-import {FeeList} from "@/components/page-component/example/example-02/fee";
+import {FeeList} from "@/components/page-component/manage/fee/fee";
 import { Loading } from "@/components/common/loading";
 import {api} from "@/utils/api";
 

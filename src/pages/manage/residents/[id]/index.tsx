@@ -1,5 +1,5 @@
 import { Loading } from "@/components/common/loading";
-import { ResidentForm } from "@/components/page-component/example/resident/resident-form";
+import { ResidentForm } from "@/components/page-component/manage/resident/resident-form";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import React from "react";

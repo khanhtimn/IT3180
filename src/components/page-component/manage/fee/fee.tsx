@@ -7,8 +7,9 @@ import {Heading} from "@/components/common/heading";
 import {Separator} from "@/components/ui/separator";
 import {DataTable} from "@/components/ui/data-table/data-table";
 import {type FeeColumn} from "@/lib/validators";
-import {columns} from "@/components/page-component/example/example-02/fee-columns";
+import {columns} from "@/components/page-component/manage/fee/fee-columns";
 import {SelectWithConfirm} from "@/components/ui/select-with-confirm";
+import {Loading} from "@/components/common/loading";
 
 interface FeeClientProps {
   data: FeeColumn[];
@@ -21,12 +22,12 @@ export const FeeList = ({data}: FeeClientProps) => {
 
   const handleConfirm = () => {
     if (selected) {
-      router.push(`/example/example-02/payment/create?apartmentNo=${selected}`);
+      router.push(`/manage/fee/payment/create?apartmentNo=${selected}`);
     }
   };
 
   if (isLoading) {
-    return <div>Đang tải...</div>;
+    return <Loading />;
   }
 
   return (

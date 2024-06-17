@@ -1,7 +1,7 @@
 import React from "react";
 import { api } from "@/utils/api";
 import { Loading } from "@/components/common/loading";
-import { ResidentClient } from "@/components/page-component/example/resident/client";
+import { ResidentClient } from "@/components/page-component/manage/resident/client";
 
 const Residents = () => {
   const { data, isLoading, isError, error } = api.resident.getAll.useQuery();
