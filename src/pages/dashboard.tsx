@@ -107,7 +107,7 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle>Thanh toán gần đây</CardTitle>
                 <CardDescription>
-                  Bạn có {recentPayments.length} thanh toán mới
+                  Chung cư có {recentPayments.length} thanh toán mới
                 </CardDescription>
               </CardHeader>
               <CardContent>
