@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RecentPayments } from "@/components/page-component/dashboard/recent-payments";
 import Modal from "@/components/page-component/dashboard/apartment-modal";
-import { DollarSign, User, Home, Activity } from "lucide-react";
+import { DollarSign, User, Home } from "lucide-react";
 import {format} from "date-fns";
 import {Loading} from "@/components/common/loading";
 
