@@ -71,7 +71,8 @@ model VerificationToken {
 
 model Resident {
   id          String    @id @default(cuid())
-  nationalId  Int       @unique @map("national_id")
+  nationalId  String    @unique @map("nationalId")
+  phoneNumber String    @map("phoneNumber")
   name        String    @map("name")
   gender      String    @map("gender")
   vehicle     String    @map("vehicle")
@@ -91,13 +92,13 @@ model Apartment {
 
 model Fee {
   id               String    @id @default(cuid())
-  apartmentSizeFee Int
-  internetFee      Int
-  electricityFee   Int
-  waterFee         Int
-  contributionFee  Int?
-  vehicleFee       Int
-  notes            String?
+  apartmentSizeFee Int       @map("apartmentSizeFee")
+  internetFee      Int       @map("internetFee")
+  electricityFee   Int       @map("electricityFee")
+  waterFee         Int       @map("waterFee")
+  contributionFee  Int?      @map("contributionFee")
+  vehicleFee       Int       @map("vehicleFee")
+  notes            String?   @map("notes")
   totalAmount      Float     @map("amount")
   dueDate          DateTime  @map("dueDate")
   isPaid           Boolean   @default(false) @map("isPaid")

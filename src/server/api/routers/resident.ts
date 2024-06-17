@@ -16,6 +16,7 @@ export const residentRouter = createTRPCRouter({
       id: item.id,
       name: item.name,
       nationalId: item.nationalId,
+      phoneNumber: item.phoneNumber,
       gender: item.gender,
       apartmentNo: item.apartmentNo,
       vehicle: item.vehicle,

@@ -25,36 +25,6 @@ const Login = ({initialData}: ILoginProps) => {
     resolver: zodResolver(loginSchema),
   });
 
-  // const { mutate: signIn } = api.user.login.useMutation({
-  //   onError: (err) => {
-  //     toast.error(err.message);
-  //     setLoading(false);
-  //   },
-  //   onSuccess: async (data) =>  {
-  //     toast.success(toastMessageSuccess);
-  //     // Store the token in cookies
-  //     if (data.token) {
-  //       Cookies.set("token", data.token, { expires: 1 }); // Cookie expires in 1 day
-  //     }
-  //     setLoading(false);
-  //     await getSession(); // Ensure the session is fetched
-  //     router.push("/dashboard");
-  //   },
-  // });
-
-  // const onSubmit = (values: ILogin) => {
-  //   setLoading(true);
-  //   signIn({ ...values });
-  // };
-
-  // const onSubmit = async (values: ILogin) => {
-  //   setLoading(true);
-  //
-  //   await signIn("credentials", {...values, callbackUrl: "/dashboard"});
-  //   toast.success(toastMessageSuccess);
-  //   //router.push( "/dashboard");
-  //   setLoading(false);
-  // };
   const onSubmit = async (values: ILogin) => {
     setLoading(true);
     try {
@@ -103,7 +73,8 @@ const Login = ({initialData}: ILoginProps) => {
                            width={500}
                            height={500}
                            alt="Google"
-                           src="/img/google.svg"/>
+                           src="/img/google.svg"
+                    />
                     Google
                   </Button>
                 </div>

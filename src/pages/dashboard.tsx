@@ -4,18 +4,28 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  Card,
+  Card, CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
-import { RecentSales } from "@/components/dashboard/recent-sales";
-import Modal from "@/components/common/pop-up-modal";
-import { DollarSign, User, Home, Activity } from "lucide-react";
+import { RecentPayments } from "@/components/page-component/dashboard/recent-payments";
+import Modal from "@/components/page-component/dashboard/apartment-modal";
+import { DollarSign, User, Home } from "lucide-react";
+import {format} from "date-fns";
+import {Loading} from "@/components/common/loading";
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: residentCount = 0, isLoading: isLoadingCount, isError: isErrorCount, error: errorCount } = api.resident.getCount.useQuery();
   const { data: occupiedApartments = { count: 0, apartmentList: [] }, isLoading: isLoadingApartments, isError: isErrorApartments, error: errorApartments } = api.resident.getOccupiedApartments.useQuery();
+  const { data: totalContributionData, isLoading: isTotalContributionLoading } = api.fee.getTotalContributionFee.useQuery();
+  const { currentMonthTotal = 0, percentageChange = 0, allTimeTotal = 0 } = totalContributionData || {};
+
+  const { data: recentPaymentsData, isLoading: isRecentPaymentsLoading } = api.fee.getRecentPayments.useQuery();
+  const recentPayments = recentPaymentsData || [];
+
+  if (isTotalContributionLoading || isRecentPaymentsLoading) {
+    return <Loading />;
+  }
 
   const handleViewApartments = () => {
     setIsModalOpen(true);
@@ -25,33 +35,38 @@ const Dashboard = () => {
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-4xl font-bold tracking-tight">Trang chủ</h2>
-          <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker />
-          </div>
+          <h2 className="text-4xl font-bold tracking-tight">Thông tin chung</h2>
+          {/*<div className="flex items-center space-x-2">*/}
+          {/*  <CalendarDateRangePicker />*/}
+          {/*</div>*/}
         </div>
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/*<Card>*/}
-            {/*  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">*/}
-            {/*    <CardTitle className="text-sm font-medium">*/}
-            {/*      Total Revenue*/}
-            {/*    </CardTitle>*/}
-            {/*    <DollarSign className="h-4 w-4 text-muted-foreground" />*/}
-            {/*  </CardHeader>*/}
-            {/*  <CardContent>*/}
-            {/*    <div className="text-2xl font-bold">$45,231.89</div>*/}
-            {/*    <p className="text-xs text-muted-foreground">*/}
-            {/*      +20.1% from last month*/}
-            {/*    </p>*/}
-            {/*  </CardContent>*/}
-            {/*</Card>*/}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Phí đóng góp tháng {format(new Date(), 'MM/yyyy')}
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {currentMonthTotal.toLocaleString('fr')}₫
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(1)}% so với tháng trước
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Tổng phí đóng góp: {allTimeTotal.toLocaleString('fr')}₫
+                </p>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Cư dân
                 </CardTitle>
-                <User className="h-4 w-4 text-muted-foreground" />
+                <User className="h-4 w-4 text-muted-foreground"/>
               </CardHeader>
               <CardContent>
                 {isLoadingCount ? (
@@ -74,8 +89,8 @@ const Dashboard = () => {
               <CardContent>
                 <div className="space-y-2">
                 {isLoadingApartments ? (
-                  <div className="text-2xl font-bold">Đang tải...</div>
-                ) : isErrorApartments ? (
+                  <Loading />
+                  ) : isErrorApartments ? (
                   <div className="text-2xl font-bold">Error: {errorApartments.message}</div>
                 ) : (
                   <div className="text-2xl font-bold">{occupiedApartments.count}</div>
@@ -86,31 +101,19 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            {/*<Card>*/}
-            {/*  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">*/}
-            {/*    <CardTitle className="text-sm font-medium">Active Now</CardTitle>*/}
-            {/*    <Activity className="h-4 w-4 text-muted-foreground" />*/}
-            {/*  </CardHeader>*/}
-            {/*  <CardContent>*/}
-            {/*    <div className="text-2xl font-bold">+573</div>*/}
-            {/*    <p className="text-xs text-muted-foreground">*/}
-            {/*      +201 since last hour*/}
-            {/*    </p>*/}
-            {/*  </CardContent>*/}
-            {/*</Card>*/}
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            {/*<Card className="col-span-3">*/}
-            {/*  <CardHeader>*/}
-            {/*    <CardTitle>Recent Sales</CardTitle>*/}
-            {/*    <CardDescription>*/}
-            {/*      You made 265 sales this month.*/}
-            {/*    </CardDescription>*/}
-            {/*  </CardHeader>*/}
-            {/*  <CardContent>*/}
-            {/*    <RecentSales />*/}
-            {/*  </CardContent>*/}
-            {/*</Card>*/}
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Thanh toán gần đây</CardTitle>
+                <CardDescription>
+                  Chung cư có {recentPayments.length} thanh toán mới
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RecentPayments payments={recentPayments} />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
