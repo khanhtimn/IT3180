@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { type Fee } from "@prisma/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, {useState, useEffect} from "react";
+import {type Fee} from "@prisma/client";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useForm, useWatch} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { Heading } from "@/components/common/heading";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { DatePicker } from "@/components/ui/date-picker";
-import { AlertModal } from "@/components/common/alert-modal";
-import { api } from "@/utils/api";
-import { feeFormSchema, type FeeFormValues } from "@/lib/validators";
-import { Trash } from "lucide-react";
+import {Heading} from "@/components/common/heading";
+import {Button} from "@/components/ui/button";
+import {Separator} from "@/components/ui/separator";
+import {Form, FormControl, FormField, FormItem, FormLabel} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {DatePicker} from "@/components/ui/date-picker";
+import {AlertModal} from "@/components/common/alert-modal";
+import {api} from "@/utils/api";
+import {feeFormSchema, type FeeFormValues} from "@/lib/validators";
+import {Trash} from "lucide-react";
 import {
   Select,
   SelectTrigger,
@@ -26,7 +26,7 @@ interface PaymentFormProps {
   initialData: Fee | null | undefined;
 }
 
-const PaymentForm = ({ initialData }: PaymentFormProps) => {
+const PaymentForm = ({initialData}: PaymentFormProps) => {
   const title = initialData ? "Cập nhật thu phí" : "Tạo khoản thu mới";
   const description = initialData ? "Cập nhật thông tin cước phí" : "Tạo khoản thu mới cho căn hộ";
   const toastMessage = initialData ? "Cập nhật thành công" : "Tạo mới thành công";
@@ -48,17 +48,19 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
   const dueDate = searchParams.get("dueDate");
 
   const [selectedDueDate, setSelectedDueDate] = useState<string | undefined>(
-    initialData?.dueDate?.toISOString().split("T")[0] ?? (dueDate ? new Date(dueDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0])
+    initialData?.dueDate?.toISOString().split("T")[0] ??
+    (dueDate ? new Date(dueDate).toISOString().split("T")[0] :
+      new Date(new Date(new Date().setMonth(new Date().getMonth() + 1)).setDate(0)).toISOString().split('T')[0])
   );
 
   const calculateElectricityCost = (kWh: number): number => {
     const rates = [
-      { max: 50, rate: 1806 },
-      { max: 100, rate: 1866 },
-      { max: 200, rate: 2167 },
-      { max: 300, rate: 2729 },
-      { max: 400, rate: 3050 },
-      { max: Infinity, rate: 3151 },
+      {max: 50, rate: 1806},
+      {max: 100, rate: 1866},
+      {max: 200, rate: 2167},
+      {max: 300, rate: 2729},
+      {max: 400, rate: 3050},
+      {max: Infinity, rate: 3151},
     ];
 
     let cost = 0;
@@ -76,10 +78,10 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
 
   const calculateWaterCost = (cubicMeters: number): number => {
     const rates = [
-      { max: 10, rate: 5973 },
-      { max: 20, rate: 7052 },
-      { max: 30, rate: 8669 },
-      { max: Infinity, rate: 15929 },
+      {max: 10, rate: 5973},
+      {max: 20, rate: 7052},
+      {max: 30, rate: 8669},
+      {max: Infinity, rate: 15929},
     ];
 
     let cost = 0;
@@ -149,8 +151,8 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
     },
   });
 
-  const watchedFields = useWatch({ control: form.control });
-  const { apartmentSizeFee, internetFee, electricityFee, waterFee, contributionFee, vehicleFee } = watchedFields;
+  const watchedFields = useWatch({control: form.control});
+  const {apartmentSizeFee, internetFee, electricityFee, waterFee, contributionFee, vehicleFee} = watchedFields;
 
   useEffect(() => {
     const totalAmount =
@@ -163,7 +165,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
     form.setValue("totalAmount", totalAmount);
   }, [apartmentSizeFee, internetFee, electricityFee, waterFee, contributionFee, vehicleFee, form]);
 
-  const { mutate: createFee } = api.fee.create.useMutation({
+  const {mutate: createFee} = api.fee.create.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -173,7 +175,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
     },
   });
 
-  const { mutate: updateFee } = api.fee.update.useMutation({
+  const {mutate: updateFee} = api.fee.update.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -183,7 +185,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
     },
   });
 
-  const { mutate: deleteFee, isLoading: deleteFeeIsLoading } = api.fee.delete.useMutation({
+  const {mutate: deleteFee, isLoading: deleteFeeIsLoading} = api.fee.delete.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -199,13 +201,11 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
       updateFee({
         ...values,
         id: initialData.id,
-        isPaid: values.isPaid,
         updateAt: new Date(),
       });
     } else {
       createFee({
         ...values,
-        isPaid: values.isPaid,
       });
     }
     setLoading(false);
@@ -222,7 +222,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
       <div className="flex items-center justify-between">
         <Heading title={title} description={description}/>
         <div className="flex items-center space-x-4">
-          <h2 className="font-bold text-2xl tracking-tight">Phòng số {apartmentNo}</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Căn hộ số {apartmentNo}</h2>
           {isEditMode && (
             <Button
               disabled={loading}
@@ -246,7 +246,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="apartmentSizeFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Phí diện tích nhà:</FormLabel>
                   <FormControl>
@@ -258,7 +258,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="internetFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Phí gói cước Internet:</FormLabel>
                   <FormControl>
@@ -278,7 +278,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="electricityFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Phí điện:</FormLabel>
                   <FormControl>
@@ -298,7 +298,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="waterFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Phí nước:</FormLabel>
                   <FormControl>
@@ -318,7 +318,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="vehicleFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Phí gửi xe:</FormLabel>
                   <FormControl>
@@ -330,7 +330,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="contributionFee"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Khoản đóng góp:</FormLabel>
                   <FormControl>
@@ -350,7 +350,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="notes"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Ghi chú:</FormLabel>
                   <FormControl>
@@ -363,7 +363,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="totalAmount"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel className={"text-red-500 font-bold"}>Tổng số tiền:</FormLabel>
                   <FormControl>
@@ -387,7 +387,7 @@ const PaymentForm = ({ initialData }: PaymentFormProps) => {
             <FormField
               control={form.control}
               name="isPaid"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Trạng thái thanh toán</FormLabel>
                   <Select

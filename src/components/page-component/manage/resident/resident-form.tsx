@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, {useState} from "react";
 import {type Resident} from "@prisma/client";
 import {useRouter} from "next/navigation";
@@ -34,6 +33,7 @@ interface ResidentFormProps {
 }
 
 export const ResidentForm = ({initialData}: ResidentFormProps) => {
+
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,8 +49,6 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
     resolver: zodResolver(residentFormSchema),
     defaultValues: initialData || {
       name: "",
-      gender: "",
-      vehicle: "",
       nationalId: "",
       phoneNumber: "",
     },
@@ -119,7 +117,9 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
 
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={(e) => {
+            void form.handleSubmit(onSubmit)(e);
+          }}
           className="w-full space-y-8"
         >
           <div className="grid-cols-3 gap-8 md:grid">
@@ -136,6 +136,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                       disabled={loading}
                     />
                   </FormControl>
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -186,6 +187,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                       disabled={loading}
                     />
                   </FormControl>
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -198,7 +200,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="CCCD/CMND"
+                      placeholder="CCCD / CMND"
                       inputMode="numeric" // display number keyboard on mobile
                       value={field.value}
                       pattern="[0-9]*" // parse to number type for zod validation
@@ -209,6 +211,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                       disabled={loading}
                     />
                   </FormControl>
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -217,11 +220,11 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
               name="apartmentNo"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Số nhà</FormLabel>
+                  <FormLabel>Số căn hộ</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Số nhà"
+                      placeholder="Số căn hộ"
                       inputMode="numeric" // display number keyboard on mobile
                       maxLength={3}
                       value={field.value || ""}
@@ -232,6 +235,7 @@ export const ResidentForm = ({initialData}: ResidentFormProps) => {
                       disabled={loading}
                     />
                   </FormControl>
+                  <FormMessage/>
                 </FormItem>
               )}
             />

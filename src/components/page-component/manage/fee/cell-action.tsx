@@ -83,7 +83,7 @@ export function CellAction({ data }: CellActionProps) {
       <AlertModal
         title="Xóa khoản phí này?"
         description="Không thể khôi phục."
-        name={"khoản phí: " + data.totalAmount.toString() +  " của chung cư số " + data.apartmentNo.toString()}
+        name={"khoản phí: " + data.totalAmount.toString() +  " của căn hộ số " + data.apartmentNo.toString()}
 
         isOpen={alertModalOpen}
         onClose={() => setAlertModalOpen(false)}

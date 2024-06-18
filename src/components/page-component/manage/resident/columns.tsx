@@ -36,7 +36,7 @@ export const columns: ColumnDef<ResidentColumn>[] = [
   },
   {
     accessorKey: "apartmentNo",
-    header: "Số nhà",
+    header: "Số căn hộ",
   },
   {
     accessorKey: "gender",

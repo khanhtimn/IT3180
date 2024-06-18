@@ -39,7 +39,7 @@ export const residentRouter = createTRPCRouter({
       });
 
       if (!apartmentExists) {
-        throw new Error("Chung cư này không tồn tại");
+        throw new Error("Căn hộ này không tồn tại");
       }
 
       return ctx.prisma.resident.create({
@@ -55,7 +55,7 @@ export const residentRouter = createTRPCRouter({
       });
 
       if (!apartmentExists) {
-        throw new Error("Chung cư này không tồn tại");
+        throw new Error("Căn hộ này không tồn tại");
       }
 
       return ctx.prisma.resident.update({

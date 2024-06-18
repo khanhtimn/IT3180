@@ -207,7 +207,7 @@ const SelectWithConfirm: React.FC<SelectWithConfirmProps> = ({ options, onConfir
   return (
     <Select open={isOpen} onOpenChange={handleOpen} onValueChange={handleChange} value={selected ?? undefined}>
       <SelectTrigger onClick={toggleDropdown}>
-        <SelectValue placeholder="Chọn chung cư...">
+        <SelectValue placeholder="Chọn căn hộ...">
           {selected ? options.find(opt => opt.value === selected)?.label : ""}
         </SelectValue>
       </SelectTrigger>
