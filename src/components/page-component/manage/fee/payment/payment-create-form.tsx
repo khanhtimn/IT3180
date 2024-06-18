@@ -28,7 +28,7 @@ export function PaymentCreateForm() {
   const [water, setWater] = useState("");
   const [contribute, setContribute] = useState("");
   const [notes, setNotes] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(new Date(new Date(new Date().setMonth(new Date().getMonth() + 1)).setDate(0)).toISOString().split('T')[0] || "");
   const router = useRouter();
   const searchParams = useSearchParams();
   const apartmentNo = Number(searchParams.get("apartmentNo"));
@@ -109,7 +109,7 @@ export function PaymentCreateForm() {
           title="Tạo khoản thu mới"
           description="Tạo khoản thu mới cho căn hộ"
         />
-        <h2 className="font-bold text-2xl tracking-tight">Phòng số {apartmentNo}</h2>
+        <h2 className="font-bold text-2xl tracking-tight">Căn hộ số {apartmentNo}</h2>
       </div>
       <Separator/>
       <div className="space-y-4">

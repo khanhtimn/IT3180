@@ -7,7 +7,7 @@ import {Heading} from "@/components/common/heading";
 import {Separator} from "@/components/ui/separator";
 import {DataTable} from "@/components/ui/data-table/data-table";
 import {type FeeColumn} from "@/lib/validators";
-import {columns} from "@/components/page-component/manage/fee/fee-columns";
+import {columns} from "@/components/page-component/manage/fee/columns";
 import {SelectWithConfirm} from "@/components/ui/select-with-confirm";
 import {Loading} from "@/components/common/loading";
 
@@ -42,11 +42,11 @@ export const FeeList = ({data}: FeeClientProps) => {
         <div className="flex flex-col items-end">
           <Heading
             title="Tạo khoản thu mới"
-            description="Tạo khoản thu mới cho chung cư"
+            description="Tạo khoản thu mới cho căn hộ"
           />
           <div className="mt-2 w-64">
             <SelectWithConfirm
-              options={apartments.map(apartment => ({ value: String(apartment.apartmentNo), label: `Chung cư: ${apartment.apartmentNo}` }))}
+              options={apartments.map(apartment => ({ value: String(apartment.apartmentNo), label: `Căn hộ: ${apartment.apartmentNo}` }))}
               onConfirm={handleConfirm}
               selected={selected}
               setSelected={setSelected}
@@ -71,7 +71,7 @@ export const FeeList = ({data}: FeeClientProps) => {
     //       <div className="flex flex-col items-start">
     //         <Heading
     //           title="Tạo khoản thu mới"
-    //           description="Tạo khoản thu mới cho chung cư"
+    //           description="Tạo khoản thu mới cho căn hộ"
     //         />
     //         <div className="mt-2 flex items-center space-x-2">
     //           <div className="w-40">
@@ -82,7 +82,7 @@ export const FeeList = ({data}: FeeClientProps) => {
     //               value={selected}
     //             >
     //               <SelectConfirm>
-    //                 <SelectValue>{selected ? `Phòng ${selected}` : "Chọn chung cư"}</SelectValue>
+    //                 <SelectValue>{selected ? `Phòng ${selected}` : "Chọn căn hộ"}</SelectValue>
     //               </SelectConfirm>
     //               <SelectContent>
     //                 {apartments.map((apartment) => (

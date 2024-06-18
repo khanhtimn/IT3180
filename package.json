@@ -1,5 +1,5 @@
 {
-  "name": "t3-app-template",
+  "name": "it3180-bluemoon",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -56,7 +56,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
     "framer-motion": "^11.2.10",
-    "js-cookie": "^3.0.5",
+    "i18next": "^23.11.5",
     "lucide-react": "^0.294.0",
     "next": "^13.2.4",
     "next-auth": "^4.21.0",
@@ -73,6 +73,7 @@
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4",
+    "zod-i18n-map": "^2.27.0",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  apartmentList: { apartmentNo: number; residents: { id: string; name: string; }[] }[];
+  residentList: { id: string; name: string; phoneNumber: string; apartmentNo: number; vehicle: string }[];
 }
 
-const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
+const ResidentModal: React.FC<ModalProps> = ({ isOpen, onClose, residentList }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Number of apartments per page
+  const itemsPerPage = 5;
 
   useEffect(() => {
     setIsMounted(true);
@@ -23,15 +23,9 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
     return null;
   }
 
-  const onChange = (open: boolean) => {
-    if (!open) {
-      onClose();
-    }
-  };
-
   const startIndex = currentPage * itemsPerPage;
-  const selectedApartments = apartmentList.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(apartmentList.length / itemsPerPage);
+  const selectedResidents = residentList.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(residentList.length / itemsPerPage);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
@@ -50,21 +44,21 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Thông tin căn hộ</DialogTitle>
-          <DialogDescription>Danh sách cư dân trong căn hộ</DialogDescription>
+          <DialogTitle>Thông tin cư dân</DialogTitle>
+          <DialogDescription>Danh sách các cư dân trong hệ thống</DialogDescription>
         </DialogHeader>
         <Accordion type="multiple">
-          {selectedApartments.map((apartment) => (
-            <AccordionItem key={apartment.apartmentNo} value={`${apartment.apartmentNo}`}>
-              <AccordionTrigger>Căn hộ số: {apartment.apartmentNo}</AccordionTrigger>
+          {selectedResidents.map((resident) => (
+            <AccordionItem key={resident.id} value={resident.id}>
+              <AccordionTrigger>{resident.name}</AccordionTrigger>
               <AccordionContent>
                 <ul className="list-disc list-inside">
-                  {apartment.residents.map((resident) => (
-                    <li key={resident.id}>{resident.name}</li>
-                  ))}
+                  <li>Số điện thoại: {resident.phoneNumber}</li>
+                  <li>Số căn hộ: {resident.apartmentNo}</li>
+                  <li>Phương tiện: {resident.vehicle}</li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -115,4 +109,4 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
   );
 };
 
-export default ApartmentModal;
+export default ResidentModal;

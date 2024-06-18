@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  apartmentList: { apartmentNo: number; residents: { id: string; name: string; }[] }[];
+  apartmentList: { apartmentNo: number; unpaidFees: { id: string; totalAmount: number; dueDate: Date }[] }[];
 }
 
-const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
+const UnpaidFeesModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Number of apartments per page
+  const itemsPerPage = 5;
 
   useEffect(() => {
     setIsMounted(true);
@@ -22,12 +23,6 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
   if (!isMounted) {
     return null;
   }
-
-  const onChange = (open: boolean) => {
-    if (!open) {
-      onClose();
-    }
-  };
 
   const startIndex = currentPage * itemsPerPage;
   const selectedApartments = apartmentList.slice(startIndex, startIndex + itemsPerPage);
@@ -50,11 +45,11 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Thông tin căn hộ</DialogTitle>
-          <DialogDescription>Danh sách cư dân trong căn hộ</DialogDescription>
+          <DialogTitle>Thông tin các khoản phí chưa thanh toán</DialogTitle>
+          <DialogDescription>Danh sách các căn hộ có phí chưa thanh toán</DialogDescription>
         </DialogHeader>
         <Accordion type="multiple">
           {selectedApartments.map((apartment) => (
@@ -62,8 +57,10 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
               <AccordionTrigger>Căn hộ số: {apartment.apartmentNo}</AccordionTrigger>
               <AccordionContent>
                 <ul className="list-disc list-inside">
-                  {apartment.residents.map((resident) => (
-                    <li key={resident.id}>{resident.name}</li>
+                  {apartment.unpaidFees.map((fee) => (
+                    <li key={fee.id}>
+                      {fee.totalAmount.toLocaleString('vi-VN')}₫ - Hạn thanh toán {new Date(fee.dueDate).toLocaleDateString('vi-VN')}
+                    </li>
                   ))}
                 </ul>
               </AccordionContent>
@@ -115,4 +112,4 @@ const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }
   );
 };
 
-export default ApartmentModal;
+export default UnpaidFeesModal;

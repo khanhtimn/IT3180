@@ -20,7 +20,7 @@ export function RecentPayments({ payments }: RecentSalesProps) {
                     <AvatarFallback>{payment.apartmentNo.toString().slice(0, 3)}</AvatarFallback>
                 </Avatar>
                 <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">Chung cư số {payment.apartmentNo}</p>
+                    <p className="text-sm font-medium leading-none">Căn hộ số {payment.apartmentNo}</p>
                     <p className="text-sm text-muted-foreground">{payment.updateAt}</p>
                 </div>
                 <div className="ml-auto font-medium">{payment.totalAmount}</div>
