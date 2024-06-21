@@ -13,7 +13,7 @@ interface ModalProps {
 const ApartmentModal: React.FC<ModalProps> = ({ isOpen, onClose, apartmentList }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Number of apartments per page
+  const itemsPerPage = 5;
 
   useEffect(() => {
     setIsMounted(true);

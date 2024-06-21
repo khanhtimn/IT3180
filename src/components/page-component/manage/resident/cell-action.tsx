@@ -32,7 +32,7 @@ export function CellAction({ data }: CellActionProps) {
       onError: (err) => {
         toast.error(err.message);
       },
-      onSuccess: async (data) => {
+      onSuccess: async () => {
         toast.success("Xóa thành công");
         await refetch();
       },

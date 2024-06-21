@@ -70,24 +70,44 @@ model VerificationToken {
 }
 
 model Resident {
-  id          String    @id @default(cuid())
-  nationalId  String    @unique @map("nationalId")
-  phoneNumber String    @map("phoneNumber")
-  name        String    @map("name")
-  gender      String    @map("gender")
-  vehicle     String    @map("vehicle")
-  apartment   Apartment @relation(fields: [apartmentNo], references: [apartmentNo], onUpdate: Cascade, onDelete: Cascade)
-  apartmentNo Int       @map("apartmentNo")
-  createAt    DateTime  @default(now()) @map("create_at")
-  updateAt    DateTime  @default(now()) @updatedAt @map("update_at")
+  id          String   @id @default(cuid())
+  nationalId  String   @unique @map("nationalId")
+  phoneNumber String   @map("phoneNumber")
+  name        String   @map("name")
+  gender      String   @map("gender")
+  vehicle     String   @map("vehicle")
+  createAt    DateTime @default(now()) @map("create_at")
+  updateAt    DateTime @default(now()) @updatedAt @map("update_at")
+  address     Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId   String   @unique
+}
+
+model Address {
+  id               String      @id @default(cuid())
+  apartment        Apartment   @relation(fields: [apartmentNo], references: [apartmentNo])
+  apartmentNo      Int
+  permanentAddress String
+  currentAddress   String
+  isStaying        Boolean
+  dateRanges       DateRange[]
+  resident         Resident?
+}
+
+model DateRange {
+  id        String   @id @default(cuid())
+  startDate DateTime @default(now()) @map("start_date")
+  endDate   DateTime @map("end_date")
+  type      String   @map("type")
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String
 }
 
 model Apartment {
-  id          Int        @id @default(autoincrement())
-  apartmentNo Int        @unique
+  id          Int       @id @default(autoincrement())
+  apartmentNo Int       @unique
   size        Int
-  residents   Resident[]
   fees        Fee[]
+  addresses   Address[]
 }
 
 model Fee {
