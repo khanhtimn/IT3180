@@ -3,6 +3,7 @@ import { residentRouter } from "@/server/api/routers/resident";
 import {userRouter} from "@/server/api/routers/user";
 import {feeRouter} from "@/server/api/routers/fee";
 import {apartmentRouter} from "@/server/api/routers/apartment";
+import {addressRouter} from "@/server/api/routers/address";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   fee: feeRouter,
   apartment: apartmentRouter,
+  address: addressRouter,
 });
 
 // export type definition of API

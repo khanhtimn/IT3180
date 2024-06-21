@@ -1,79 +1,58 @@
 import {z} from "@/lib/utils";
 
 export const residentFormSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: 'Hãy điền đúng Họ & Tên' }),
-  gender: z
-    .string()
-    .min(1),
-  nationalId: z
-    .string()
-    .min(9, { message: 'Định dạng CCCD / CMND yêu cầu từ 9-12 só' }),
-  phoneNumber: z
-    .string()
-    .min(10, { message: 'Số điện thoại phải có 10 chữ số' }),
-  apartmentNo: z
-    .number()
-    .int()
-    .nonnegative()
-    .min(3, { message: 'Hãy nhập đúng số căn hộ có 3 chữ số' }),
-  vehicle: z
-    .string()
-    .min(1),
+  name: z.string().min(3, {message: 'Hãy điền đúng Họ & Tên'}),
+  nationalId: z.string().min(9, {message: 'Định dạng CCCD / CMND yêu cầu từ 9-12 số'}),
+  phoneNumber: z.string().min(10, {message: 'Số điện thoại phải có 10 chữ số'}),
+  gender: z.string().min(1),
+  vehicle: z.string().min(1),
+  address: z.object({
+    apartmentNo: z.number().int().positive(),
+    permanentAddress: z.string().min(1),
+    currentAddress: z.string().min(1),
+    isStaying: z.boolean(),
+    startDate: z.coerce.date().optional(),
+    endDate: z.date().optional(),
+  }),
+  addressId: z.string().optional(),
 });
 
-export type ResidentFromValues = z.infer<typeof residentFormSchema>;
+export type ResidentFormValues = z.infer<typeof residentFormSchema>;
+
+export const updateResidentFormSchema = residentFormSchema.extend({
+  id: z.string(),
+  isStayingChangedToTrue: z.boolean().optional(),
+});
+
+export type UpdateResidentFormValues = z.infer<typeof updateResidentFormSchema>;
+
 
 export const residentColumn = z.object({
-  id: z
-    .string(),
-  name: z
-    .string(),
-  gender: z
-    .string(),
-  nationalId: z
-    .string(),
-  phoneNumber: z
-    .string()
-    .min(10, { message: 'Số điện thoại phải có 10 chữ số' }),
-  apartmentNo: z
-    .number()
-    .int()
-    .nonnegative()
-    .min(3, { message: 'Hãy nhập đúng số căn hộ có 3 chữ số' }),
-  vehicle: z
-    .string(),
-  createAt: z
-    .string(),
-  updateAt: z
-    .string(),
+  id: z.string(),
+  name: z.string(),
+  gender: z.string(),
+  nationalId: z.string(),
+  phoneNumber: z.string(),
+  addressId: z.string(),
+  vehicle: z.string(),
+  createAt: z.string(),
+  updateAt: z.string(),
 });
 
 export type ResidentColumn = z.infer<typeof residentColumn>;
 
-export const updateResidentFormSchema = z.object({
-  id: z
-    .string(),
-  name: z
-    .string()
-    .min(3, { message: 'Hãy điền đúng Họ & Tên' }),
-  gender: z
-    .string(),
-  phoneNumber: z
-    .string()
-    .min(10, { message: 'Số điện thoại phải có 10 chữ số' }),
-  nationalId: z
-    .string()
-    .min(9, { message: 'Định dạng CCCD / CMND yêu cầu từ 9-12 só' }),
-  apartmentNo: z
-    .number()
-    .int()
-    .nonnegative()
-    .min(3, { message: 'Hãy nhập đúng số căn hộ có 3 chữ số' }),
-  vehicle: z
-    .string(),
+
+
+export const addressSchema = z.object({
+  id: z.string().optional(),
+  apartmentNo: z.number().int().positive(),
+  permanentAddress: z.string().min(1),
+  currentAddress: z.string().min(1),
+  isStaying: z.boolean(),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
 });
+
 
 export const apartmentFormSchema = z.object({
   apartmentNo: z
@@ -168,11 +147,11 @@ export type FeeColumn = z.infer<typeof feeColumn>;
 export const loginSchema = z.object({
   email: z
     .string()
-    .email({ message: 'Vui lòng nhập đúng định dạng Email' }),
+    .email({message: 'Vui lòng nhập đúng định dạng Email'}),
   password: z
     .string()
-    .min(4, { message: 'Mật khẩu cần có tối thiểu 4 ký tự' })
-    .max(32, { message: 'Mật khẩu tối đa là 32 ký tự' } ),
+    .min(4, {message: 'Mật khẩu cần có tối thiểu 4 ký tự'})
+    .max(32, {message: 'Mật khẩu tối đa là 32 ký tự'}),
 });
 
 export type ILogin = z.infer<typeof loginSchema>;
