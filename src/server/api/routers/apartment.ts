@@ -1,6 +1,6 @@
-import {z} from "zod";
-import {createTRPCRouter, publicProcedure} from "@/server/api/trpc";
-import {apartmentFormSchema, updateApartmentFormSchema} from "@/lib/validators";
+import { z } from "zod";
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { apartmentFormSchema, updateApartmentFormSchema } from "@/lib/validators";
 
 export const apartmentRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -9,7 +9,11 @@ export const apartmentRouter = createTRPCRouter({
         id: "desc",
       },
       include: {
-        residents: true,
+        addresses: {
+          include: {
+            resident: true,
+          },
+        },
         fees: true,
       },
     });
@@ -21,7 +25,11 @@ export const apartmentRouter = createTRPCRouter({
         id: "desc",
       },
       include: {
-        residents: true,
+        addresses: {
+          include: {
+            resident: true,
+          },
+        },
         fees: true,
       },
     });
@@ -31,7 +39,11 @@ export const apartmentRouter = createTRPCRouter({
     return ctx.prisma.apartment.findUnique({
       where: { id: input },
       include: {
-        residents: true,
+        addresses: {
+          include: {
+            resident: true,
+          },
+        },
         fees: true,
       },
     });
@@ -63,11 +75,16 @@ export const apartmentRouter = createTRPCRouter({
       where: { id: input },
     });
   }),
+
   getApartmentsWithResidents: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.apartment.findMany({
       where: {
-        residents: {
-          some: {},
+        addresses: {
+          some: {
+            resident: {
+              isNot: null,
+            },
+          },
         },
       },
       select: {
@@ -79,12 +96,19 @@ export const apartmentRouter = createTRPCRouter({
   getVehiclesByApartment: publicProcedure
     .input(z.object({ apartmentNo: z.number().int().nonnegative() }))
     .query(async ({ ctx, input }) => {
-      const residents = await ctx.prisma.resident.findMany({
-        where: { apartmentNo: input.apartmentNo },
+      const vehicles = await ctx.prisma.resident.findMany({
+        where: {
+          address: {
+            apartment: {
+              apartmentNo: input.apartmentNo,
+            },
+          },
+        },
         select: { vehicle: true },
       });
-      return residents.map((resident) => resident.vehicle);
+      return vehicles.map((resident) => resident.vehicle);
     }),
+
   getApartmentSize: publicProcedure
     .input(z.object({ apartmentNo: z.number().int().nonnegative() }))
     .query(async ({ ctx, input }) => {
