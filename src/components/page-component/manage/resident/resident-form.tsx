@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { type ResidentFormValues, residentFormSchema } from "@/lib/validators";
@@ -32,7 +32,7 @@ import { type DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {type Resident} from "@prisma/client";
+import { type Resident } from "@prisma/client";
 
 interface ResidentFormProps {
   initialData: Resident & {
@@ -52,7 +52,6 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isStaying, setIsStaying] = useState(initialData?.address?.isStaying ?? true);
-
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: initialData?.address?.dateRanges?.[0]?.startDate,
     to: initialData?.address?.dateRanges?.[0]?.endDate,
@@ -97,24 +96,6 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
       addressId: "",
     },
   });
-
-  useEffect(() => {
-    if (initialData) {
-      setDateRange({
-        from: initialData.address.dateRanges?.[0]?.startDate,
-        to: initialData.address.dateRanges?.[0]?.endDate,
-      });
-    }
-  }, [initialData]);
-
-  useEffect(() => {
-    const subscription = form.watch((values) => {
-      if (values.address && !isStaying) {
-        setDateRange({ from: values.address.startDate, to: values.address.endDate });
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form, isStaying]);
 
   const { mutate: createResident } = api.resident.create.useMutation({
     onError: (err) => {
