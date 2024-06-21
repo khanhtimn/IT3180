@@ -1,4 +1,4 @@
-import { LayoutDashboard, Info, Users, Landmark } from "lucide-react";
+import { LayoutDashboard, Info, Users, Landmark, CircleUserRoundIcon } from "lucide-react";
 import { type NavItem } from "@/types";
 
 export const NavItems: NavItem[] = [
@@ -26,6 +26,12 @@ export const NavItems: NavItem[] = [
         icon: Landmark,
         color: "text-red-500",
         href: "/manage/fee",
+      },
+      {
+        title: "Quản lý tài khoản",
+        icon: CircleUserRoundIcon,
+        color: "text-red-500",
+        href: "/manage/account",
       },
     ],
   },
