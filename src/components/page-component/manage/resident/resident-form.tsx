@@ -65,6 +65,7 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
   const form = useForm<ResidentFormValues>({
     resolver: zodResolver(residentFormSchema),
     defaultValues: initialData ? {
+      addressId: initialData.address.id,
       name: initialData.name,
       nationalId: initialData.nationalId,
       phoneNumber: initialData.phoneNumber,
@@ -78,9 +79,9 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
         startDate: initialData.address.dateRanges?.[0]?.startDate ?? undefined,
         endDate: initialData.address.dateRanges?.[0]?.endDate ?? undefined,
       },
-      addressId: initialData.address.id,
     } : {
       name: "",
+      addressId: "",
       nationalId: "",
       phoneNumber: "",
       gender: "",
@@ -93,7 +94,6 @@ export const ResidentForm = ({ initialData }: ResidentFormProps) => {
         startDate: undefined,
         endDate: undefined,
       },
-      addressId: "",
     },
   });
 

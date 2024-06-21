@@ -35,10 +35,6 @@ export const columns: ColumnDef<ResidentColumn>[] = [
     header: "Họ & Tên",
   },
   {
-    accessorKey: "apartmentNo",
-    header: "Số căn hộ",
-  },
-  {
     accessorKey: "gender",
     header: "Giới tính",
   },
@@ -49,6 +45,26 @@ export const columns: ColumnDef<ResidentColumn>[] = [
   {
     accessorKey: "nationalId",
     header: "CCCD/CMND",
+  },
+  {
+    accessorKey: "vehicle",
+    header: "Phương tiện",
+  },
+  {
+    accessorKey: "address.apartmentNo",
+    header: "Số căn hộ",
+  },
+  {
+    accessorKey: "address.permanentAddress",
+    header: "Địa chỉ thường trú",
+  },
+  {
+    accessorKey: "address.currentAddress",
+    header: "Địa chỉ tạm trú",
+  },
+  {
+    accessorKey: "address.isStaying",
+    header: "Trạng thái",
   },
   // {
   //   accessorKey: "createAt",

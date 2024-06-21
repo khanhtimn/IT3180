@@ -31,7 +31,7 @@ export const residentRouter = createTRPCRouter({
       address: {
         permanentAddress: item.address.permanentAddress,
         currentAddress: item.address.currentAddress,
-        isStaying: item.address.isStaying,
+        isStaying: item.address.isStaying ? "Đang cư trú" : "Tạm vắng",
         apartmentNo: item.address.apartment.apartmentNo,
         dateRanges: item.address.dateRanges.map((dateRange) => ({
           startDate: format(dateRange.startDate, "dd/MM/yyyy"),
@@ -186,6 +186,62 @@ export const residentRouter = createTRPCRouter({
   getCount: publicProcedure.query(async ({ctx}) => {
     return ctx.prisma.resident.count();
   }),
+  getOccupiedApartments: publicProcedure.query(async ({ ctx }) => {
+    const occupiedApartments = await ctx.prisma.apartment.findMany({
+      where: {
+        addresses: {
+          some: {
+            isStaying: true,
+            resident: {
+              isNot: null,
+            },
+          },
+        },
+      },
+      include: {
+        addresses: {
+          where: {
+            isStaying: true,
+            resident: {
+              isNot: null,
+            },
+          },
+          include: {
+            resident: {
+              select: {
+                id: true,
+                name: true,
+                phoneNumber: true,
+                vehicle: true, // Include vehicle field
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const apartments = occupiedApartments.map((apartment) => ({
+      apartmentNo: apartment.apartmentNo,
+      residents: apartment.addresses.map((address) => {
+        if (!address.resident) {
+          return { id: '', name: 'Unknown Resident', phoneNumber: '', vehicle: '', apartmentNo: apartment.apartmentNo }; // Handle missing resident case gracefully
+        }
+        return {
+          id: address.resident.id,
+          name: address.resident.name,
+          phoneNumber: address.resident.phoneNumber,
+          vehicle: address.resident.vehicle,
+          apartmentNo: apartment.apartmentNo,
+        };
+      }),
+    }));
+
+    return {
+      apartments,
+      count: apartments.length,
+    };
+  }),
+
 });
 
 export default residentRouter;

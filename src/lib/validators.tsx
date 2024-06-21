@@ -4,12 +4,12 @@ export const residentFormSchema = z.object({
   name: z.string().min(3, {message: 'Hãy điền đúng Họ & Tên'}),
   nationalId: z.string().min(9, {message: 'Định dạng CCCD / CMND yêu cầu từ 9-12 số'}),
   phoneNumber: z.string().min(10, {message: 'Số điện thoại phải có 10 chữ số'}),
-  gender: z.string().min(1),
-  vehicle: z.string().min(1),
+  gender: z.string().min(1, {message: 'Hãy chọn giới tính'}),
+  vehicle: z.string().min(1, {message: 'Hãy chọn thông tin phương tiện'}),
   address: z.object({
     apartmentNo: z.number().int().positive(),
-    permanentAddress: z.string().min(1),
-    currentAddress: z.string().min(1),
+    permanentAddress: z.string().min(1, {message: 'Hãy điền địa chỉ thường trú'}),
+    currentAddress: z.string().min(1, {message: 'Hãy điền địa chỉ hiện tại'}),
     isStaying: z.boolean(),
     startDate: z.coerce.date().optional(),
     endDate: z.date().optional(),
@@ -33,10 +33,16 @@ export const residentColumn = z.object({
   gender: z.string(),
   nationalId: z.string(),
   phoneNumber: z.string(),
-  addressId: z.string(),
   vehicle: z.string(),
-  createAt: z.string(),
-  updateAt: z.string(),
+  address: z.object({
+    apartmentNo: z.number().int().positive(),
+    permanentAddress: z.string().min(1),
+    currentAddress: z.string().min(1),
+    isStaying: z.string(),
+    startDate: z.coerce.date().optional(),
+    endDate: z.date().optional(),
+  }),
+  addressId: z.string().optional(),
 });
 
 export type ResidentColumn = z.infer<typeof residentColumn>;

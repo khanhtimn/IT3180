@@ -29,15 +29,12 @@ const Dashboard = () => {
     isError: isErrorResidentCount,
     error: errorResidentCount
   } = api.resident.getCount.useQuery();
-  const {
-    data: residentsData = [],
-  } = api.resident.getAll.useQuery();
 
   const {
-    data: occupiedApartments = {count: 0, apartmentList: []},
+    data: occupiedApartments,
     isLoading: isLoadingApartments,
     isError: isErrorApartments,
-    error: errorApartments
+    error: errorApartments,
   } = api.resident.getOccupiedApartments.useQuery();
   const {
     data: totalContributionData,
@@ -164,7 +161,7 @@ const Dashboard = () => {
                   ) : isErrorApartments ? (
                     <div className="text-2xl font-bold">Error: {errorApartments.message}</div>
                   ) : (
-                    <div className="text-2xl font-bold">{occupiedApartments.count}</div>
+                    <div className="text-2xl font-bold">{occupiedApartments.count ?? 0}</div>
                   )}
                   <Button size="sm" onClick={handleViewApartments}>
                     Chi tiết
@@ -205,7 +202,7 @@ const Dashboard = () => {
       <ApartmentModal
         isOpen={isApartmentModalOpen}
         onClose={() => setIsApartmentModalOpen(false)}
-        apartmentList={occupiedApartments.apartmentList}
+        apartmentList={occupiedApartments?.apartments ?? []}
       />
       <UnpaidFeesModal
         isOpen={isUnpaidFeesModalOpen}
@@ -218,7 +215,7 @@ const Dashboard = () => {
       <ResidentModal
         isOpen={isResidentModalOpen}
         onClose={() => setIsResidentModalOpen(false)}
-        residentList={residentsData}
+        residentList={occupiedApartments?.apartments.flatMap(apartment => apartment.residents) ?? []}
       />
     </div>
   );
