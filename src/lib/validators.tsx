@@ -176,3 +176,23 @@ export const loginSchema = z.object({
 });
 
 export type ILogin = z.infer<typeof loginSchema>;
+
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(4, { message: 'Mật khẩu hiện tại cần có tối thiểu 4 ký tự' })
+    .max(32, { message: 'Mật khẩu hiện tại tối đa là 32 ký tự' }),
+  newPassword: z
+    .string()
+    .min(4, { message: 'Mật khẩu mới cần có tối thiểu 4 ký tự' })
+    .max(32, { message: 'Mật khẩu mới tối đa là 32 ký tự' }),
+  confirmPassword: z
+    .string()
+    .min(4, { message: 'Xác nhận mật khẩu cần có tối thiểu 4 ký tự' })
+    .max(32, { message: 'Xác nhận mật khẩu tối đa là 32 ký tự' }),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: "Mật khẩu mới và xác nhận mật khẩu không khớp",
+  path: ["confirmPassword"],
+});
+
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
